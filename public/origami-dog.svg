@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="660" viewBox="0 0 1120 660" role="img" aria-labelledby="title desc">
+<title id="title">강아지 얼굴 종이접기 도안</title><desc id="desc">정사각형을 대각선으로 반 접어 아래로 향한 삼각형을 만들고, 양쪽 귀를 아래로 접고 아래 꼭짓점을 위로 조금 접어 코를 만듭니다. 눈과 코를 그리면 완성입니다.</desc>
+<rect width="1120" height="660" fill="#fffdf5"/><g font-family="sans-serif" fill="#202b20"><text x="45" y="58" font-size="29" font-weight="bold">전퇴 거인 · 강아지 얼굴 종이접기</text><text x="45" y="96" font-size="18">준비물: 정사각 색종이 1장, 펜  |  분대원마다 1개 완성</text></g>
+<g stroke="#596943" stroke-width="3" stroke-linejoin="round">
+<path d="M160 170 250 260 160 350 70 260Z" fill="#e5bc70"/><path d="M70 260H250" stroke-dasharray="8 6" fill="none"/>
+<path d="M340 210H540L440 355Z" fill="#e5bc70"/><path d="M365 230 390 280M515 230 490 280" stroke-dasharray="7 5" fill="none"/>
+<path d="M630 210H830L730 355Z" fill="#e5bc70"/><path d="M630 210 650 300 692 246ZM830 210 810 300 768 246Z" fill="#d39557"/><path d="M708 324H752" stroke-dasharray="7 5"/>
+<path d="M895 210H1095L995 355Z" fill="#e5bc70"/><path d="M895 210 915 300 957 246ZM1095 210 1075 300 1033 246Z" fill="#d39557"/><path d="M973 324 995 299 1017 324Z" fill="#fff5db"/>
+</g><g fill="#3c3027"><circle cx="974" cy="276" r="5"/><circle cx="1016" cy="276" r="5"/><path d="M986 305H1004L995 316Z"/></g>
+<g fill="#202b20" font-family="sans-serif" font-size="18" text-anchor="middle"><text x="160" y="415">1. 대각선으로 반 접기</text><text x="440" y="415">2. 삼각형을 아래로 놓기</text><text x="730" y="415">3. 양쪽 귀를 아래로 접기</text><text x="995" y="415">4. 코를 접고 얼굴 그리기</text></g>
+<g fill="#526147" font-family="sans-serif" font-size="20"><text x="55" y="505">아래 꼭짓점은 위로 조금 접어 코 부분을 만드세요.</text><text x="55" y="545">귀 2개와 접힌 코가 보이면 성공! 먼저 완성한 사람은 동료에게 순서를 설명해 주세요.</text><text x="55" y="595" font-size="16">도안은 접는 순서를 보여주는 안내입니다. 귀 크기와 표정은 자유롭게 표현하세요.</text></g></svg>
