@@ -1,0 +1,8 @@
+.env*
+!.env.example
+.vercel/
+node_modules/
+운영자-접속정보.md
+분대장-전용링크.md
+backups/
+*.zip
