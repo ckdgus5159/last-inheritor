@@ -41,3 +41,48 @@ test('reset API requires admin, explicit confirmation and the exact backed-up ve
   assert.equal((await call(admin,'reset',{confirmation:'초기화',expectedVersion:7})).status,409);assert.equal(writes,1);
  }finally{globalThis.fetch=originalFetch;for(const key of Object.keys(process.env))if(!(key in originalEnv))delete process.env[key];Object.assign(process.env,originalEnv);}
 });
+
+
+test('admin-only rehearsal API never reads or writes real game state',async()=>{
+ const savedEnv={...process.env};
+ const savedFetch=globalThis.fetch;
+ Object.assign(process.env,{SESSION_SECRET:'test-rehearsal-signature',DB_GATEWAY_SECRET:'rehearsal-db-secret',SUPABASE_URL:'https://mock.invalid',SUPABASE_PUBLISHABLE_KEY:'test',GAME_CODES_JSON:'{"admin":"private"}'});
+ let dbReads=0,dbWrites=0,limits=0;
+ globalThis.fetch=async (_url,options)=>{
+  const body=JSON.parse(options.body);
+  if(body.p_action==='limit'){limits++;return new Response(JSON.stringify({allowed:true}),{status:200});}
+  if(body.p_action==='read'){dbReads++;throw new Error('Rehearsal may not read persisted state');}
+  if(body.p_action==='write'){dbWrites++;throw new Error('Rehearsal may not write persisted state');}
+  throw new Error('Unexpected DB access');
+ };
+ async function call(actor,stage=7){
+  let result;
+  const res={setHeader(){},status(code){this.code=code;return this;},json(data){result={code:this.code,data};}};
+  const cookie=actor?'inheritor='+encodeSession(actor):undefined;
+  await handler({method:'POST',headers:{'content-type':'application/json',host:'localhost',cookie},body:{action:'rehearsal',payload:{stage,team:'A',role:stage===7?'admin':'leader'}}},res);
+  return result;
+ }
+ try{
+  const admin={role:'admin',sid:'only-admin'},leader={role:'leader',team:'A',sid:'normal-leader'};
+  assert.equal((await call(null)).code,401);
+  assert.equal((await call(leader)).code,403);
+  const pending=await call(admin,7);
+  assert.equal(pending.code,200);
+  assert.equal(pending.data.role,'admin');
+  assert.equal(pending.data.rehearsal,true);
+  assert.equal(pending.data.teams[0].puzzleSubmission.status,'pending');
+  const approved=await call(admin,8);
+  assert.equal(approved.code,200);
+  assert.equal(approved.data.puzzle,true);
+  const final=await call(admin,11);
+  assert.equal(final.code,200);
+  assert.match(final.data.epilogue,/우리의 이야기/);
+  assert.equal(dbReads,0);
+  assert.equal(dbWrites,0);
+  assert.ok(limits>=4);
+ }finally{
+  globalThis.fetch=savedFetch;
+  for(const key of Object.keys(process.env))if(!(key in savedEnv))delete process.env[key];
+  Object.assign(process.env,savedEnv);
+ }
+});

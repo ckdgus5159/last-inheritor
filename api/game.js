@@ -2,6 +2,7 @@ import {createHmac,randomBytes,timingSafeEqual,createHash} from 'node:crypto';
 import {gateway,updateState} from '../lib/db.mjs';
 import {GameError,transition,projectState,TEAM_IDS} from '../lib/game.mjs';
 import {authorizeEntry} from '../lib/access.mjs';
+import {rehearsalSnapshot} from '../lib/rehearsal.mjs';
 const equal=(a,b)=>{const x=Buffer.from(String(a)),y=Buffer.from(String(b));return x.length===y.length&&timingSafeEqual(x,y);};
 const signature=v=>createHmac('sha256',process.env.SESSION_SECRET).update(v).digest('base64url');
 export function encodeSession(actor){const data=Buffer.from(JSON.stringify({...actor,exp:Date.now()+43200000})).toString('base64url');return `${data}.${signature(data)}`;}
@@ -41,6 +42,12 @@ export default async function handler(req,res){
   if(action==='backup'){
    if(actor.role!=='admin')throw new GameError('본부 관리자만 백업할 수 있습니다.',403);
    const row=await gateway('read');return send(200,{format:'last-inheritor-backup-v1',exportedAt:new Date().toISOString(),version:row.version,data:row.data});
+  }
+  if(action==='rehearsal'){
+   if(actor.role!=='admin')throw new GameError('리허설은 본부 관리자만 실행할 수 있습니다.',403);
+   const {stage=0,team='A',role='leader'}=payload;
+   if(!Number.isInteger(stage)||stage<0||stage>11||!TEAM_IDS.includes(team)||!['admin','leader','observer'].includes(role))throw new GameError('리허설 단계를 확인하세요.');
+   return send(200,rehearsalSnapshot({stage,team,role}));
   }
   const state=await updateState((s,version)=>{
    if(action==='reset'){

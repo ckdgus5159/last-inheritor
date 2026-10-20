@@ -14,4 +14,8 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci --ignore-scripts
+      - run: node --check public/app.js
+      - run: node --check lib/game.mjs
+      - run: node --check lib/rehearsal.mjs
+      - run: node --check api/game.js
       - run: npm test
