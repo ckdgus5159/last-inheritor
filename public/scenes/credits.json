@@ -35,5 +35,17 @@
       "url": "https://anime.everyeye.it/notizie/chi-gigante-corazzato-alla-scoperta-guerrieri-de-attacco-giganti-480323.html",
       "image": "https://images.everyeye.it/img-notizie/chi-gigante-corazzato-scoperta-guerrieri-de-attacco-giganti-v4-480323.jpg"
     }
-  ]
+  ],
+  "artwork": {
+    "type": "AI-generated original game illustrations",
+    "date": "2026-10-20",
+    "tool": "image_gen",
+    "assets": [
+      "/scenes/world-map.jpg",
+      "/scenes/ending-inherit.jpg",
+      "/scenes/ending-liberate.jpg",
+      "/scenes/ending-epilogue.jpg"
+    ],
+    "description": "참고 이미지의 방벽 구조를 바탕으로 제작한 단일 방벽 지도와 계승·해방·공통 에필로그용 창작 이미지"
+  }
 }
