@@ -1,0 +1,62 @@
+import {randomBytes,randomInt} from 'node:crypto';
+import {TEAMS,TITANS,BONUSES,PHOTO,PERSON,assigned} from './catalog.mjs';
+export {TEAMS,TITANS,BONUSES,assigned};
+export class RuleError extends Error {constructor(message,status=409){super(message);this.status=status;}}
+const ensure=(v,m,status)=>{if(!v)throw new RuleError(m,status);};
+const token=()=>randomBytes(24).toString('base64url');
+export function initialState(){return {epoch:token(),phase:'lobby',round:0,clock:null,pausedAt:null,published:false,config:{roundSeconds:420,bossSeconds:480,timerMin:9900,timerMax:10100,tapTarget:35,bottleAttempts:3,bottleWins:1,limits:Object.fromEntries(TITANS.map(t=>[t.id,t.limit])),criteria:Object.fromEntries(TITANS.map(t=>[t.id,{'6':'참여·미흡 — 현장 기준 조정 필요','8':'부분 성공 — 현장 기준 조정 필요','10':'완전 성공 — 현장 기준 조정 필요'}]))},teams:Object.fromEntries(TEAMS.map(id=>[id,{id,leader:null,generation:0,reports:{},bonuses:{}}])),qr:Array.from({length:12},(_,i)=>({id:`Q${String(i+1).padStart(2,'0')}`,token:token(),value:i<6?1:2,enabled:true,location:'',claim:null})),boss:{status:'waiting',approved:[]},announcements:[{id:token(),text:'작전 준비 완료! 분대를 선택하고 오늘의 전과를 쌓아 보자.',urgent:false}],events:[]};}
+export const active=(s,now)=>s.phase==='round'&&s.pausedAt===null&&now<s.clock.end;
+function closeBonuses(s){for(const t of Object.values(s.teams))for(const b of Object.values(t.bonuses))if(['issued','running'].includes(b.status))b.status='expired';}
+function expire(s,now){if(s.phase!=='round'||(s.pausedAt===null&&now>=s.clock.end))closeBonuses(s);}
+export function scores(s,id){const t=s.teams[id],base=Object.values(t.reports).reduce((a,r)=>a+(r.score??0),0),qr=s.qr.filter(q=>q.claim?.team===id).reduce((a,q)=>a+(q.claim.points??q.value),0),bonus=Object.values(t.bonuses).reduce((a,b)=>a+(b.points??0),0),penalty=Object.values(t.bonuses).reduce((a,b)=>a+(b.penalty??0),0),extra=Math.min(20,qr+bonus);return {base,qr,bonus,penalty,extra,total:Math.max(0,Math.min(80,base+extra-penalty))};}
+export function eligibility(s,id,now){const r=s.teams[id].reports[s.round];return active(s,now)&&r?.score===10&&r.elapsed<=s.config.limits[r.titan]*1000&&!s.teams[id].bonuses[s.round];}
+const admin=a=>ensure(a.role==='admin','관리자만 실행할 수 있습니다.',403);
+const getTeam=(s,id)=>{ensure(TEAMS.includes(id),'분대를 확인하세요.',400);return s.teams[id];};
+function captain(s,a){ensure(a.role==='captain'&&TEAMS.includes(a.team),'분대장만 실행할 수 있습니다.',403);ensure(s.teams[a.team].leader===a.sid&&s.teams[a.team].generation===a.generation,'분대장 권한이 해제되었습니다. 새 링크로 입장하세요.',403);}
+export function transition(state,actor,action,p={},now=Date.now(),rng=randomInt){
+ let s=structuredClone(state);expire(s,now);let target=actor.team;
+ if(action==='claim'){const t=getTeam(s,actor.team);ensure(actor.role==='captain'&&actor.generation===t.generation,'새 분대장 링크를 사용하세요.',403);ensure(!t.leader||t.leader===actor.sid,'이미 지정된 분대장이 있습니다. 관리자에게 재지정을 요청하세요.');t.leader=actor.sid;}
+ else if(['report','qrClaim','bonusStart','bonusSubmit'].includes(action)){
+  captain(s,actor);ensure(active(s,now),'정규 라운드 진행 중에만 가능합니다.');const t=s.teams[actor.team];
+  if(action==='report'){if(!t.reports[s.round]||now<t.reports[s.round].at)t.reports[s.round]={titan:assigned(actor.team,s.round).id,at:now,elapsed:now-s.clock.start,score:null};}
+  if(action==='qrClaim'){const q=s.qr.find(q=>q.token===p.token);ensure(q,'보급품 QR을 확인하세요.',404);ensure(!q.claim,'이미 사용된 QR입니다');ensure(q.enabled,'비활성화된 QR입니다');ensure(s.qr.filter(q=>q.claim?.team===actor.team).length<4,'분대별 QR 획득은 네 개까지입니다. 이 QR은 소모되지 않았습니다.');q.claim={team:actor.team,at:now,points:q.value};}
+  if(action==='bonusStart'){const b=t.bonuses[s.round];ensure(b&&['timer','tap'].includes(b.kind),'웹 미니게임을 확인하세요.');ensure(b.status==='issued','이미 시작한 도전입니다. 재도전할 수 없습니다.');ensure(s.clock.end-now>=(b.kind==='tap'?15000:10000),'도전을 완료할 시간이 부족합니다.');b.status='running';b.started=now;b.attempt=token();}
+  if(action==='bonusSubmit'){const b=t.bonuses[s.round];ensure(b?.status==='running'&&b.attempt===p.attempt,'유효한 도전이 아닙니다.');const age=now-b.started;let win=false;
+   if(b.kind==='timer'){ensure(Number.isFinite(p.elapsed)&&p.elapsed>=0&&p.elapsed<=30000&&age>=p.elapsed-500,'측정 시간을 확인하세요.',400);win=p.elapsed>=s.config.timerMin&&p.elapsed<=s.config.timerMax;b.measure=p.elapsed;}
+   else if(b.kind==='tap'){ensure(age>=15000&&age<=45000,'도전 시간을 확인하세요.');ensure(Array.isArray(p.taps)&&p.taps.length<=300&&p.taps.every((v,i,a)=>Number.isFinite(v)&&v>=0&&v<=15000&&(!i||v-a[i-1]>=30)),'터치 기록을 확인하세요.',400);win=p.taps.length>=s.config.tapTarget;b.measure=p.taps.length;}
+   else throw new RuleError('웹 미니게임이 아닙니다.');b.status=win?'success':'failed';b.points=win?3:0;b.finished=now;
+  }
+ } else {
+  admin(actor);target=p.team??null;
+  if(action==='start'){ensure(s.phase==='lobby','이미 시작된 작전입니다.');s.phase='round';s.round=1;s.clock={start:now,end:now+s.config.roundSeconds*1000};}
+  else if(action==='pause'){ensure(['round','boss'].includes(s.phase)&&s.pausedAt===null&&now<s.clock.end,'진행 중에만 일시정지할 수 있습니다.');s.pausedAt=now;}
+  else if(action==='resume'){ensure(s.pausedAt!==null,'일시정지 상태가 아닙니다.');const d=now-s.pausedAt;s.clock.start+=d;s.clock.end+=d;for(const t of Object.values(s.teams)){const b=t.bonuses[s.round];if(b?.status==='running')b.started+=d;}s.pausedAt=null;}
+  else if(action==='endRound'){ensure(s.phase==='round','정규 라운드가 아닙니다.');closeBonuses(s);s.phase='intermission';s.pausedAt=null;}
+  else if(action==='nextRound'){ensure(s.phase==='intermission'||(s.phase==='boss'&&s.boss.status!=='active'),'먼저 현재 라운드를 종료하세요.');ensure(s.round<6,'마지막 라운드입니다. 결과를 발표하세요.');if(s.round===3)ensure(['defeated','emergency'].includes(s.boss.status),'3라운드 뒤 공동 보스전을 진행하세요.');s.round++;s.phase='round';s.pausedAt=null;s.clock={start:now,end:now+s.config.roundSeconds*1000};}
+  else if(action==='approve'||action==='correctBase'){const t=getTeam(s,p.team),round=Number(p.round??s.round),r=t.reports[round];ensure(r,'분대장의 완료 보고가 필요합니다.');ensure((action==='approve'?[6,8,10]:[0,6,8,10]).includes(p.score),'점수는 6·8·10점으로 승인하세요.',400);if(action==='approve')ensure(r.score===null||r.score===p.score,'점수 정정 기능을 사용하세요.');r.score=p.score;r.approved=now;if(p.score!==10&&t.bonuses[round])Object.assign(t.bonuses[round],{status:'failed',points:0,penalty:0});}
+  else if(action==='issueBonus'){const t=getTeam(s,p.team);ensure(eligibility(s,p.team,now),'10점 승인·최초 보고시간·라운드 진행 조건을 확인하세요.');const used=new Set(Object.values(t.bonuses).map(b=>b.kind));let pool=BONUSES.filter(b=>!used.has(b.id));if(!pool.length)pool=BONUSES;const b=pool[rng(pool.length)],instructions=b.id==='photo'?PHOTO[rng(PHOTO.length)]:b.id==='person'?PERSON[rng(PERSON.length)]:b.id==='bottle'?`물병 세우기 ${s.config.bottleAttempts}회 중 ${s.config.bottleWins}회 성공`:b.id==='timer'?`${s.config.timerMin/1000}~${s.config.timerMax/1000}초에 멈추기`:b.id==='tap'?`15초 동안 ${s.config.tapTarget}회 이상 터치`:b.description;t.bonuses[s.round]={id:token(),kind:b.id,name:b.name,instructions,status:'issued',issued:now,points:0,penalty:0};}
+  else if(action==='fieldResult'||action==='roulette'){ensure(active(s,now),'라운드 종료 후에는 보너스 결과를 승인할 수 없습니다.');const b=getTeam(s,p.team).bonuses[s.round];ensure(b?.status==='issued','이미 처리되었거나 발급되지 않은 미션입니다.');if(action==='roulette'){ensure(b.kind==='roulette','룰렛 미션이 아닙니다.');b.outcome=[3,1,0,-1][rng(4)];b.points=Math.max(0,b.outcome);b.penalty=Math.max(0,-b.outcome);b.status=b.outcome>0?'success':b.outcome<0?'failed':'complete';}else {ensure(['photo','person','bottle'].includes(b.kind),'현장형 미션이 아닙니다.');ensure(typeof p.success==='boolean','결과를 선택하세요.',400);b.status=p.success?'success':'failed';b.points=p.success?3:0;}b.finished=now;}
+  else if(action==='correctExtra'){const t=getTeam(s,p.team);if(p.kind==='qr'){const q=s.qr.find(q=>q.id===p.id&&q.claim?.team===p.team);ensure(q&&Number.isInteger(p.points)&&p.points>=0&&p.points<=q.value,'QR 정정값을 확인하세요.',400);q.claim.points=p.points;}else {const b=t.bonuses[p.round];ensure(b&&['success','failed','complete'].includes(b.status)&&[0,1,3].includes(p.points)&&[0,1].includes(p.penalty)&&!(p.points&&p.penalty),'보너스 정정값을 확인하세요.',400);b.points=p.points;b.penalty=p.penalty;}}
+  else if(action==='bossStart'){ensure(s.phase==='intermission'&&s.round===3&&s.boss.status==='waiting','3라운드 종료 후 시작하세요.');s.phase='boss';s.pausedAt=null;s.boss.status='active';s.clock={start:now,end:now+s.config.bossSeconds*1000};}
+  else if(action==='bossApprove'){getTeam(s,p.team);ensure(s.phase==='boss'&&s.boss.status==='active'&&s.pausedAt===null&&now<s.clock.end,'보스전 진행 중에 승인하세요.');if(!s.boss.approved.includes(p.team))s.boss.approved.push(p.team);if(s.boss.approved.length===4)s.boss.status='defeated';}
+  else if(action==='bossEmergency'){ensure(s.phase==='boss'&&s.boss.status==='active','진행 중인 보스전이 없습니다.');s.boss.status='emergency';s.pausedAt=null;}
+  else if(action==='endGame'){ensure(s.phase!=='lobby','작전을 먼저 시작하세요.');closeBonuses(s);s.phase='ended';s.pausedAt=null;}
+  else if(action==='publish'){ensure(s.phase==='ended','작전을 종료한 뒤 발표하세요.');s.published=true;}
+  else if(action==='announce'){ensure(typeof p.text==='string'&&p.text.trim().length>0&&p.text.length<=240,'240자 이내 지령을 입력하세요.',400);s.announcements.unshift({id:token(),text:p.text.trim(),urgent:!!p.urgent});s.announcements=s.announcements.slice(0,12);}
+  else if(action==='qrEdit'){const q=s.qr.find(q=>q.id===p.id);ensure(q,'QR을 확인하세요.',400);if(typeof p.enabled==='boolean')q.enabled=p.enabled;if(typeof p.location==='string')q.location=p.location.slice(0,100);}
+  else if(action==='revokeCaptain'){const t=getTeam(s,p.team);t.leader=null;t.generation++;}
+  else if(action==='configure'){ensure(['lobby','intermission'].includes(s.phase),'대기 또는 라운드 사이에 설정하세요.');for(const [key,min,max] of [['roundSeconds',30,1800],['bossSeconds',30,1800],['timerMin',9000,10000],['timerMax',10000,11000],['tapTarget',1,300],['bottleAttempts',1,10],['bottleWins',1,10]])if(p[key]!==undefined){ensure(Number.isInteger(p[key])&&p[key]>=min&&p[key]<=max,'설정 범위를 확인하세요.',400);s.config[key]=p[key];}ensure(s.config.bottleWins<=s.config.bottleAttempts,'성공 횟수는 시도 횟수 이하여야 합니다.',400);for(const t of TITANS){if(p.limits?.[t.id]!==undefined){ensure(Number.isInteger(p.limits[t.id])&&p.limits[t.id]>=1&&p.limits[t.id]<=1800,'시간 기준을 확인하세요.',400);s.config.limits[t.id]=p.limits[t.id];}for(const n of ['6','8','10'])if(p.criteria?.[t.id]?.[n]!==undefined){ensure(typeof p.criteria[t.id][n]==='string'&&p.criteria[t.id][n].length<=160,'판정 기준은 160자 이내입니다.',400);s.config.criteria[t.id][n]=p.criteria[t.id][n];}}}
+  else if(action==='reset'){ensure(p.confirm==='V2 초기화','초기화 확인 문구가 필요합니다.',400);s=initialState();}
+  else throw new RuleError('알 수 없는 작전입니다.',400);
+ }
+ s.events.unshift({id:token(),at:now,action,team:target,by:actor.role,...(TEAMS.includes(target)?{before:scores(state,target),after:scores(s,target)}:{})});s.events=s.events.slice(0,160);return s;
+}
+export function projectState(state,actor,now=Date.now()){
+ const s=structuredClone(state);expire(s,now);s.serverNow=now;s.active=active(s,now);s.actor={role:actor.role,team:actor.team};s.boss.hp=100-s.boss.approved.length*25;
+ s.ranking=TEAMS.map(id=>({id,...scores(s,id)})).sort((a,b)=>b.total-a.total);let last=-1,rank=0;s.ranking.forEach((x,i)=>{if(x.total!==last)rank=i+1;x.rank=rank;last=x.total;});
+ s.medals=s.published?TEAMS.map(id=>({team:id,titles:[Object.values(s.teams[id].reports).filter(r=>r.score>0).length===6?'여섯 거인의 계승자':null,s.qr.filter(q=>q.claim?.team===id).length===4?'보급 수색대':null,Object.values(s.teams[id].bonuses).some(b=>b.status==='success')?'한계 돌파':null,s.boss.approved.includes(id)?'방벽의 수호자':null].filter(Boolean)})):[];
+ for(const t of Object.values(s.teams)){t.eligible=eligibility(s,t.id,now);t.captainAssigned=!!t.leader;delete t.leader;if(actor.role!=='admin'&&actor.team!==t.id)t.bonuses={};}
+ s.qrRemaining=s.qr.filter(q=>q.enabled&&!q.claim).length;s.qrUsed=s.qr.filter(q=>q.claim).length;
+ if(actor.role!=='admin'){s.qr=s.qr.map(({id,value,enabled,claim})=>({id,value,enabled,claim}));delete s.events;delete s.config.criteria;delete s.config.limits;}
+ return s;
+}
