@@ -1,0 +1,54 @@
+/* 직접 제공하는 OFL 웹폰트. 시스템 글꼴은 다운로드 중·미지원 문자에 사용한다. */
+:root{--font-ui:'Field Ops Text','Malgun Gothic','Apple SD Gothic Neo',sans-serif;--font-display:'Field Ops Display',var(--font-ui);--font-score:'Field Ops Score',var(--font-ui);--serif:var(--font-display)}
+body{font-family:var(--font-ui);font-weight:400;line-height:1.75;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:var(--font-ui)}
+h1,h2,h3{word-break:keep-all;overflow-wrap:anywhere}
+.brand strong,.pagehead h1,.login-story h1,.hero h2,.titan-card h3,.boss h2,.victory h2,.bonusbox h2,.bonus-dispatch h2,#bonus-alert h2,.scene-banner figcaption p{font-family:var(--font-display);font-weight:400;letter-spacing:-.025em}
+.brand strong{font-size:19px;line-height:1.45}
+.brand small{font-weight:600;letter-spacing:.12em}
+.pagehead h1{font-size:37px;line-height:1.3}
+.pagehead p{line-height:1.8}
+.login-story h1{font-size:clamp(42px,4.6vw,70px);line-height:1.25;letter-spacing:-.035em;margin-bottom:26px;text-shadow:0 3px 0 #07110988,0 5px 24px #0009}
+.login-story .game-subtitle{font-family:var(--font-ui);font-size:17px;font-weight:650;letter-spacing:.2em}
+.login-story p.login-motto{font-family:var(--font-display);font-weight:400;font-size:24px;line-height:1.65;color:#f1f1e3;text-shadow:0 2px 12px #000}
+.login-motto span{color:#d4dcb0;font-size:.8em}
+.loginform h2{font-family:var(--font-ui);font-size:25px;font-weight:700;letter-spacing:-.055em;line-height:1.45}
+.loginform .brand strong{font-family:var(--font-display);font-size:22px;font-weight:400}
+.loginform label{font-weight:550}
+.btn,.navbtn{font-weight:600;letter-spacing:-.025em}
+.panelhead h2,.headquarters h2,.collection-progress h2{font-family:var(--font-ui);font-weight:700;letter-spacing:-.04em}
+.hero h2{font-size:33px;line-height:1.35}
+.titan-card h3{font-size:25px;line-height:1.4}
+.scene-banner figcaption p{font-size:25px;line-height:1.5}
+.sector-name{font-family:var(--font-ui);font-weight:650;letter-spacing:-.025em}
+.eyebrow{font-family:var(--font-ui);font-weight:650;letter-spacing:.08em}
+.scorestamp{font-family:var(--font-ui);font-weight:700}
+.stat .value,.rankrow .points,.rankrow .rank,.clock,.operation-strip b,.giant-number{font-family:var(--font-score);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.015em}
+.stat .value{font-size:38px;line-height:1.05}
+.rankrow .points{font-size:32px;line-height:1.1}
+.rankrow .rank{font-size:24px;line-height:1}
+.clock{font-size:37px;line-height:1.15}
+.operation-strip b{font-size:28px;line-height:1.2}
+.giant-number{font-size:64px;line-height:1.2}
+.stat .value small,.rankrow .points small,.rankrow>div>small,.stat .label{font-family:var(--font-ui);font-weight:400;letter-spacing:0}
+.inherited-ability strong{font-family:var(--font-ui);font-weight:650}
+.victory h2{font-size:38px;font-style:normal;line-height:1.35}
+.victory p{font-family:var(--font-ui);font-size:17px;font-weight:700;line-height:1.7}
+.scoretable{font-variant-numeric:tabular-nums}
+@media(max-width:720px){
+ .brand strong{font-size:16px!important;line-height:1.4}
+ .pagehead h1{font-size:31px}
+ .login-story h1{font-size:clamp(35px,9.8vw,47px);line-height:1.25;margin-bottom:17px}
+ .login-story .game-subtitle{font-size:14px;margin-bottom:10px}
+ .login-story p.login-motto{font-size:20px;line-height:1.55}
+ .loginform h2{font-size:24px}
+ .hero h2{font-size:30px}
+ .titan-cards h3{font-size:26px}
+ .scene-banner figcaption p{font-size:20px}
+ .dashboard-stats .stat .value{font-size:32px}
+ .stat .value{font-size:34px}
+ .clock{font-size:33px}
+ .operation-strip b{font-size:25px}
+ .giant-number{font-size:58px}
+ .victory h2{font-size:32px}
+}

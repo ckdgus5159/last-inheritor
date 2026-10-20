@@ -17,7 +17,7 @@ async function newPage(width=390,height=844){
    await handler({method:req.method(),url:u.pathname+u.search,headers:{...await req.allHeaders(),host:'ops.test'},body:req.postData()||'{}'},{setHeader(k,v){headers[k]=v;},status(n){status=n;return this;},json(v){body=v;}});
    await route.fulfill({status,headers,body:JSON.stringify(body)});return;
   }
-  try{const file=u.pathname==='/'?'index.html':u.pathname.slice(1),ext=path.extname(file);await route.fulfill({body:await readFile(new URL(file,root)),contentType:({'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.jpg':'image/jpeg','.webp':'image/webp','.json':'application/json','.svg':'image/svg+xml'})[ext]||'text/plain'});}catch{await route.fulfill({status:404,body:'Not found'});}
+  try{const file=u.pathname==='/'?'index.html':u.pathname.slice(1),ext=path.extname(file);await route.fulfill({body:await readFile(new URL(file,root)),contentType:({'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.jpg':'image/jpeg','.webp':'image/webp','.woff2':'font/woff2','.json':'application/json','.svg':'image/svg+xml'})[ext]||'text/plain'});}catch{await route.fulfill({status:404,body:'Not found'});}
  });
  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(15000);return page;
 }
@@ -31,6 +31,7 @@ const page=await newPage();
 try{
  await page.goto('https://ops.test/');
  const loaded=await page.evaluate(async()=>{const {SCENES}=await import('/scenes.mjs');return Promise.all(SCENES.map(src=>new Promise(resolve=>{const img=new Image();img.onload=()=>resolve(img.naturalWidth>0);img.onerror=()=>resolve(false);img.src=src;})));});
+ const fontStatus=await page.evaluate(async()=>{const samples=[['400 32px "Field Ops Display"','조사병단의 사명!!! 너의 심장을 바쳐라'],['400 14px "Field Ops Text"','분대에 합류하기'],['400 14px "Field Ops Text"','힣'],['700 32px "Field Ops Score"','0123456789:.-+']];return Promise.all(samples.map(async([font,text])=>{const faces=await document.fonts.load(font,text);return faces.length>0&&faces.every(f=>f.status==='loaded');}));});assert.ok(fontStatus.every(Boolean),'self-hosted display, body, extended Korean and score fonts load');assert.ok(await page.locator('.login-story h1').evaluate(el=>getComputedStyle(el).fontFamily.includes('Field Ops Display')));assert.ok((await page.locator('.login-motto').innerText()).includes('조사병단의 사명!!!'));assert.ok((await page.locator('.login-motto').innerText()).includes('너의 심장을 바쳐라'));
  assert.equal(loaded.length,12);assert.ok(loaded.every(Boolean),'12 anime scenes load');
  for(const width of [360,390,768,1440,1890]){
   await page.setViewportSize({width,height:width>1000?921:844});await noOverflow(page,'login '+width);

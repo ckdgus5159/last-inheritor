@@ -22,7 +22,7 @@ async function poll(){if(!state||pending)return;try{const r=await fetch('/api/op
 function renderLogin(error=''){
  closeBonusNotice(false);
  $('#app').innerHTML=`<main class="login">${scene(9,'login-art','입체기동으로 출격하는 에렌, 미카사, 아르민과 리바이')}
- <div class="login-story"><p class="game-subtitle">신조 44게오</p><h1>심장을 바쳐라</h1><div class="story-line"></div><p>망토를 두르고, 동료 곁에 서라.<br>오늘은 우리가 조사병단이다.</p></div>
+ <div class="login-story"><p class="game-subtitle">신조 44게오</p><h1>심장을 바쳐라</h1><div class="story-line"></div><p class="login-motto"><span>조사병단의 사명!!!</span><br>너의 심장을 바쳐라</p></div>
  <section class="login-form-panel"><form id="login" class="loginform">
  <a class="brand" href="/"><img src="/assets/crest.svg" alt="조사병단 문장"><span><strong>심장을 바쳐라</strong><small>신조 44게오</small></span></a>
  <h2>분대에 합류하기</h2><p class="muted">${captain?'분대장 전용 링크로 연결되었습니다.':'함께 출정할 분대를 선택해 주세요.'}</p>
