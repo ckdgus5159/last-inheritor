@@ -5,7 +5,7 @@
 - 실행: `npm ci --ignore-scripts && npm run dev` (Node 22 이상)
 - 로컬: http://localhost:4273 · 관리자 코드 `local-v2` · 메모리 전용, 재시작 시 초기화
 - 규칙·API 검증: `npm test`
-- 브라우저 검증: `npm install --no-save --ignore-scripts playwright@1.62.1`, `npx playwright install --with-deps chromium`, `node tests/browser.mjs`
+- 브라우저 검증: `npm install --no-save --ignore-scripts playwright@1.62.1`, `npx playwright install --with-deps chromium`, `node scripts/browser-check.mjs`
 - 배포: 이 디렉터리만 별도 Vercel 프로젝트의 루트로 사용합니다. 루트 V1 설정은 수정하지 않습니다.
 
 ## 행사 당일
