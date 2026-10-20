@@ -15,29 +15,6 @@
 
 
 /* October 2026: cinematic map reveal, manual investigator review, and isolated rehearsal. */
-.world-map{position:relative;margin:24px 0;border:1px solid #706e4f;background:#101915;overflow:hidden;box-shadow:0 16px 45px #0005;isolation:isolate}
-.world-map-title{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:15px 19px;background:linear-gradient(110deg,#202c20,#111912);border-bottom:1px solid #53543c}
-.world-map-title strong{font-family:var(--serif);font-size:18px;color:#f1e7c8}
-.world-map-art{position:relative;aspect-ratio:3/2;min-height:175px;overflow:hidden;background:#141a16}
-.world-map-art>.world-map-image{width:100%;height:100%;position:absolute;inset:0;display:block;object-fit:cover;filter:saturate(.88) brightness(.96)}
-.world-fog{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));pointer-events:none}
-.world-tile{display:grid;place-items:center;position:relative;border:1px solid #c6b88d26;transition:opacity 1.15s ease,background .8s}
-.world-tile.sealed{background:repeating-linear-gradient(135deg,#111615ed 0,#111615ed 11px,#1d2421f3 12px,#1d2421f3 17px);color:#5c655b}
-.world-tile.discovered{background:#101a164d;color:#e3ddbe}
-.world-tile span{font-family:var(--serif);font-size:30px;text-shadow:0 0 18px #c7d7ad55}
-.world-map-bottom{padding:10px 19px;font-size:11px;letter-spacing:.06em;color:var(--muted);background:#151d16}
-.world-map.revealed{border-color:#c7b87d;box-shadow:0 0 0 1px #baaa6555,0 22px 55px #0009;animation:mapArrival .8s ease both}
-.world-map.revealed .world-map-art>.world-map-image{filter:saturate(1.04);animation:mapBrighten 2.8s ease both}
-.world-map.revealed .world-tile{opacity:0;animation:mapFogLift 1.15s cubic-bezier(.2,.6,.2,1) both}
-.world-map.revealed .world-tile:nth-child(1){animation-delay:.1s}
-.world-map.revealed .world-tile:nth-child(2){animation-delay:.28s}
-.world-map.revealed .world-tile:nth-child(3){animation-delay:.46s}
-.world-map.revealed .world-tile:nth-child(4){animation-delay:.64s}
-.world-map.revealed .world-tile:nth-child(5){animation-delay:.82s}
-.world-map.revealed .world-tile:nth-child(6){animation-delay:1s}
-@keyframes mapFogLift{0%{opacity:1;filter:blur(0);transform:scale(1)}100%{opacity:0;filter:blur(15px);transform:scale(1.13)}}
-@keyframes mapArrival{0%{box-shadow:0 0 0 0 #e4d5a000;transform:translateY(12px)}100%{box-shadow:0 0 0 1px #c8b77366,0 20px 50px #0008;transform:translateY(0)}}
-@keyframes mapBrighten{0%{filter:saturate(.6) brightness(.65)}100%{filter:saturate(1.04) brightness(1.06)}}
 .reveal-card{animation:revealCard .65s ease both}
 .reveal-map{animation:revealCard .8s .2s ease both}
 .reveal-order{font-family:var(--serif);text-align:center;color:#f4eacb;font-size:clamp(21px,3.5vw,33px);margin:24px auto;animation:revealCard .7s .6s ease both}
@@ -54,10 +31,9 @@
 .rehearsal-toolbar select{max-width:330px;width:auto;min-width:100px;padding:7px 10px;background:#201b14;border:1px solid #aa8457}
 .rehearsal-toolbar button{padding:7px 11px;border-color:#ad956e}
 .rehearsal-toolbar button.primary{background:#e2bb7e;color:#231f16}
-@media(max-width:720px){.world-map-title{padding:11px 12px}.world-map-title strong{font-size:14px}.world-map-art{min-height:160px}.world-map-art>.world-map-image{width:100%;height:100%}.world-map-bottom{padding:8px 12px}.world-tile span{font-size:22px}.rehearsal-toolbar{position:relative;padding:12px}.rehearsal-toolbar select{max-width:100%;width:100%}.rehearsal-toolbar .actions{align-items:flex-start}.rehearsal-toolbar .actions label{min-width:55px}}
-@media(prefers-reduced-motion:reduce){.world-map.revealed,.world-map.revealed .world-tile,.world-map.revealed .world-map-art>.world-map-image,.reveal-card,.reveal-map,.reveal-order{animation:none!important;transition:none!important;transform:none!important}.world-map.revealed .world-tile{opacity:0}}
+@media(max-width:720px){.rehearsal-toolbar{position:relative;padding:12px}.rehearsal-toolbar select{max-width:100%;width:100%}.rehearsal-toolbar .actions{align-items:flex-start}.rehearsal-toolbar .actions label{min-width:55px}}
+@media(prefers-reduced-motion:reduce){.reveal-card,.reveal-map,.reveal-order{animation:none!important;transition:none!important;transform:none!important}}
 
 /* Illustrated map and narrative ending scenes */
 .operation-card>.operation-scene{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;border:1px solid #706e4f;margin:0 0 18px;filter:saturate(.9)}
 .ending>.ending-scene,.ending>.epilogue-scene{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border:1px solid #706e4f;margin:0 auto 24px}
-.world-tile.discovered span{position:absolute;right:12px;bottom:8px;font-size:22px;color:#e7ddba;text-shadow:0 1px 7px #000}

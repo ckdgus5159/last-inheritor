@@ -1,0 +1,30 @@
+/* The artwork and SVG share one coordinate system at every screen size. */
+.world-map{position:relative;margin:24px 0;border:1px solid #62694b;background:#101915;overflow:hidden;box-shadow:0 16px 45px #0005;isolation:isolate}
+.world-map-title{display:flex;justify-content:space-between;align-items:center;gap:10px 18px;flex-wrap:wrap;padding:15px 19px;background:linear-gradient(110deg,#202c20,#111912);border-bottom:1px solid #53543c}
+.world-map-title .eyebrow{margin:0;font-size:9px;color:#bfc89f;letter-spacing:.19em}
+.world-map-title strong{font-family:var(--serif);font-size:17px;color:#f1e7c8;word-break:keep-all}
+.world-map-art{position:relative;aspect-ratio:3/2;overflow:hidden;background:#101915}
+.world-map-image,.world-fog{position:absolute;inset:0;display:block;width:100%;height:100%}
+.world-map-image{object-fit:contain;filter:saturate(.96) brightness(1.02)}
+.world-fog{pointer-events:none}
+.map-compass{position:absolute;right:4%;top:5%;color:#c6c5a4;font-size:9px;letter-spacing:.12em;line-height:1.2;text-align:center;opacity:.75;pointer-events:none;text-shadow:0 1px 4px #000}
+.map-compass span{display:block;font-size:30px;font-weight:400}
+.world-map-progress{display:flex;justify-content:space-between;gap:8px 18px;flex-wrap:wrap;padding:13px 18px 11px;border-top:1px solid #454f39;color:#a7b49c;font-size:11px}
+.map-progress-label{color:#c2cbaa}
+.map-progress-label strong{color:#eee0b0;font-size:14px;font-weight:500;margin-left:7px;font-variant-numeric:tabular-nums}
+.map-regions{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px 10px;margin:0;padding:0 18px 14px}
+.map-region{display:flex;align-items:flex-start;gap:8px;padding:8px 0;color:#73816f;min-width:0;border-top:1px solid #323e2d}
+.map-region-mark{font-size:11px;line-height:1.6;opacity:.7}
+.map-region strong{display:block;font-size:11px;font-weight:500}
+.map-region small{display:block;margin-top:3px;font-size:10px;line-height:1.5;word-break:keep-all}
+.map-region.charted{color:#d1d9bd}
+.map-region.charted .map-region-mark{color:#d9bc7e;opacity:1}
+.map-region.charted small{color:#a9b896}
+.world-map-bottom{padding:11px 18px;margin:0;font-size:11px;line-height:1.7;color:#a2b094;background:#151d16;border-top:1px solid #323e2d;word-break:keep-all}
+.world-map.charted{border-color:#9a9361}
+.world-map.revealed .world-map-title{background:linear-gradient(110deg,#303820,#151e15)}
+.world-map.revealed .world-map-title strong{color:#f4e7b7}
+.world-map.revealed .map-progress-label strong{color:#f4df9d}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+@media(max-width:720px){.world-map{margin:18px 0}.world-map-title{padding:12px}.world-map-title strong{font-size:15px}.world-map-title .eyebrow{font-size:8px}.world-map-progress{padding:11px 12px;font-size:10px}.map-regions{padding:0 12px 10px;gap:5px 9px}.map-region{gap:5px}.map-region small{font-size:9px}.world-map-bottom{padding:10px 12px;font-size:10px}.map-compass span{font-size:24px}}
+@media(prefers-reduced-motion:reduce){.world-fog,.map-clearing{animation:none!important;transition:none!important}}
