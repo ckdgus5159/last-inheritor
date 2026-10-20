@@ -39,6 +39,11 @@
       "title": "조사병단 대열의 경례 — SlashFilm",
       "url": "https://www.slashfilm.com/1170975/why-attack-on-titan-drew-inspiration-from-real-history/",
       "image": "https://www.slashfilm.com/img/gallery/why-attack-on-titan-drew-inspiration-from-real-history/l-intro-1674064382.jpg"
+    },
+    {
+      "title": "입체기동 출격 이미지 — 사용자 첨부와 동일한 이미지",
+      "url": "https://www.inverse.com/article/30455-attack-on-titan-movie-live-action-american-english-mikasa-eren",
+      "image": "https://imgix.bustle.com/inverse/c2/36/fb/38/df96/4a9a/97c3/b15626ee9343/attack-on-titan-season-2jpg.jpeg"
     }
   ],
   "assets": [
@@ -94,6 +99,11 @@
       "file": "/assets/anime/scout-ranks.webp",
       "source": "https://www.slashfilm.com/1170975/why-attack-on-titan-drew-inspiration-from-real-history/",
       "description": "입장 화면 — 조사병단 대열의 경례. 원본 1600×900을 WebP로 압축."
+    },
+    {
+      "file": "/assets/anime/entry-action.webp",
+      "source": "https://www.inverse.com/article/30455-attack-on-titan-movie-live-action-american-english-mikasa-eren",
+      "description": "입장 화면 — 사용자 지정 이미지와 동일한 에렌·미카사·아르민·리바이의 입체기동 출격 이미지."
     }
   ],
   "referencePages": [
