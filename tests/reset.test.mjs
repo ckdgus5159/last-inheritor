@@ -6,7 +6,7 @@ const admin={role:'admin',sid:'test-admin'};
 const leader={role:'leader',team:'A',sid:'test-leader'};
 test('reset clears progress and captain authority in every game phase while preserving the input snapshot',()=>{
  for(const phase of ['briefing','round','finale','epilogue']){
-  const s=initialState();s.phase=phase;s.round=6;s.deadline=123;s.pausedAt=120;s.emergency={resolved:true};s.teams.A={leader:leader.sid,missions:{cart:{status:'approved',score:10}},puzzle:true,ending:'advance'};
+  const s=initialState();s.phase=phase;s.round=6;s.deadline=123;s.pausedAt=120;s.emergency={resolved:true};s.teams.A={leader:leader.sid,missions:{cart:{status:'approved',score:10}},puzzle:true,ending:'inherit'};
   const snapshot=structuredClone(s);
   assert.throws(()=>transition(s,leader,'reset',{confirmation:'초기화'}),/본부/);
   assert.throws(()=>transition(s,admin,'reset'),/확인/);
