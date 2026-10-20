@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {MAP_REGIONS,exploredRegions,createExplorationMemory,renderWorldMap} from '../public/world-map.js';
+import {MAP_REGIONS,exploredRegions,createExplorationMemory,renderWorldMap,REVEAL_DURATION} from '../public/world-map.js';
 import {initialState,transition,projectState} from '../lib/game.mjs';
 const admin={role:'admin',sid:'command'},leader={role:'leader',team:'A',sid:'captain'};
 const actor=team=>({role:'observer',team,sid:'observer-'+team});
@@ -42,6 +42,40 @@ test('discovery animation survives unchanged polls but never leaks across teams,
  memory.update(data,1100);assert.equal(memory.events.size,0);
  data.missions[0].record=null;memory.update(data,1200);assert.equal(memory.events.size,0);
  data.missions[0].record={title:'record'};memory.update(data,1300);assert.equal(memory.events.get('cart'),1300);
- memory.update(data,3100);assert.equal(memory.events.size,0);
- memory.reset();memory.update(data,3200);assert.equal(memory.events.size,0);
+ memory.update(data,1300+REVEAL_DURATION);assert.equal(memory.events.size,0);
+ memory.reset();memory.update(data,1400+REVEAL_DURATION);assert.equal(memory.events.size,0);
+});
+
+
+test('records reveal clues before landscapes and a future route only after all six records',()=>{
+ const state=initialState();
+ const stages=['sealed','glimpses','glimpses','connected','connected','landscape','landscape'];
+ for(let count=0;count<=6;count++){
+  if(count)state.teams.A.missions[MAP_REGIONS[count-1].id]={status:'approved',score:10};
+  const html=renderWorldMap(projectState(state,actor('A')));
+  assert.ok(html.includes(`data-discovery-stage="${stages[count]}"`));
+  assert.equal(html.includes('map-connection'),count>=3);
+  assert.equal(html.includes('map-extent'),count>=5);
+  assert.equal(html.includes('world-expedition'),count===6);
+  assert.ok(!html.includes('탐사 완료')&&!html.includes('모든 경로 확보'));
+  if(count===0)assert.ok(html.includes('생존 불가 지역으로 보고됨'));
+  if(count===6)assert.ok(html.includes('현장 미확인')&&html.includes('아직 가보지 않은 땅'));
+ }
+});
+
+test('milestones expand earlier clues while preserving their original discovery timestamps',()=>{
+ const memory=createExplorationMemory();const state=initialState();
+ const update=at=>memory.update(projectState(state,actor('A')),at);
+ update(0);
+ state.teams.A.missions.cart={status:'approved',score:10};update(100);
+ state.teams.A.missions.beast={status:'approved',score:10};update(200);
+ state.teams.A.missions.female={status:'approved',score:10};update(300);
+ assert.equal(memory.events.get('cart'),100);
+ assert.equal(memory.expansions.get('cart'),300);
+ assert.equal(memory.expansions.get('beast'),300);
+ update(350);assert.equal(memory.expansions.get('cart'),300);
+ state.teams.A.missions.jaw={status:'approved',score:10};update(400);
+ assert.equal(memory.expansions.get('cart'),300);
+ state.teams.A.missions.armor={status:'approved',score:10};update(500);
+ assert.equal(memory.expansions.get('cart'),500);
 });

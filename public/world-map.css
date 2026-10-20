@@ -28,3 +28,17 @@
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 @media(max-width:720px){.world-map{margin:18px 0}.world-map-title{padding:12px}.world-map-title strong{font-size:15px}.world-map-title .eyebrow{font-size:8px}.world-map-progress{padding:11px 12px;font-size:10px}.map-regions{padding:0 12px 10px;gap:5px 9px}.map-region{gap:5px}.map-region small{font-size:9px}.world-map-bottom{padding:10px 12px;font-size:10px}.map-compass span{font-size:24px}}
 @media(prefers-reduced-motion:reduce){.world-fog,.map-clearing{animation:none!important;transition:none!important}}
+/* A recovered map is an invitation to travel, not a completed expedition. */
+.map-discovery{margin:0 18px 15px;padding:13px 15px;border-left:2px solid #b39f68;background:linear-gradient(100deg,#28302199,#18201855)}
+.map-discovery-label{font-size:10px;letter-spacing:.08em;color:#c8b984;margin:0 0 5px}
+.map-discovery-text{font-family:var(--serif);font-size:16px;line-height:1.7;color:#eee7ce;margin:0;word-break:keep-all}
+.map-discovery-note{font-size:10px;line-height:1.7;color:#a2af96;margin:7px 0 0;word-break:keep-all}
+.map-discovery.old-report{border-color:#78654f;background:#241f1844}
+.old-report .map-discovery-label{color:#a9997a}.old-report .map-discovery-text{color:#c8c1ac}
+.world-expedition{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.map-route-shadow{stroke:#101b15;stroke-width:9;fill:none;stroke-dasharray:7 13;stroke-linecap:round;opacity:.65}
+.map-expedition-path{stroke:#f3d18a;stroke-width:4;fill:none;stroke-dasharray:7 13;stroke-linecap:round}
+.map-departure{fill:#ead194;stroke:#233324;stroke-width:4}
+.map-destination{fill:#dfbc76;stroke:#ffe0a0;stroke-width:4;stroke-linejoin:round}
+.map-route-label{font-family:var(--serif);font-size:26px;fill:#fff0c5;paint-order:stroke;stroke:#142419;stroke-width:6px;stroke-linejoin:round}
+@media(max-width:720px){.map-discovery{margin:0 12px 12px;padding:11px 12px}.map-discovery-text{font-size:14px}.map-discovery-note{font-size:9px}.map-route-label{display:none}}
