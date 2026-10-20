@@ -21,7 +21,7 @@ async function refresh(){const r=await fetch('/api/ops?'+new URLSearchParams({re
 async function poll(){if(!state||pending)return;try{const r=await fetch('/api/ops?'+new URLSearchParams({rehearsal:mode==='rehearsal'?'1':'0',preview}));if(r.status===401){state=null;renderLogin();return;}if(!r.ok)throw Error();const data=await r.json();offset=data.serverNow-Date.now();connected=true;const changed=dirty||JSON.stringify([data.version,data.active,data.boss.status,data.actor])!==JSON.stringify([state.version,state.active,state.boss.status,state.actor]);if(changed&&!document.activeElement?.matches('input,textarea,select')){dirty=false;accept(data);}else {if(changed)dirty=true;state=data;paintClock();syncBonusNotice();}}catch{connected=false;paintClock();}}
 function renderLogin(error=''){
  closeBonusNotice(false);
- $('#app').innerHTML=`<main class="login">${scene(9,'login-art','방벽 내부 전경')}
+ $('#app').innerHTML=`<main class="login">${scene(9,'login-art','조사병단이 대열을 이루어 경례하는 장면')}
  <div class="login-story"><p class="game-subtitle">신조 44게오</p><h1>심장을 바쳐라</h1><div class="story-line"></div><p>망토를 두르고, 동료 곁에 서라.<br>오늘은 우리가 조사병단이다.</p></div>
  <section class="login-form-panel"><form id="login" class="loginform">
  <a class="brand" href="/"><img src="/assets/crest.svg" alt="조사병단 문장"><span><strong>심장을 바쳐라</strong><small>신조 44게오</small></span></a>

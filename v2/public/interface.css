@@ -3,7 +3,7 @@
 .brand small{color:var(--gold);letter-spacing:.12em;font-size:10px}
 .login{position:relative;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);min-height:100svh;padding:0;background:var(--paper)}
 .login-art{position:relative;height:auto;min-height:100svh;border-right:1px solid var(--line)}
-.login-art .scene-image{opacity:.75;object-position:45% center}
+.login-art .scene-image{opacity:.75;object-position:50% 35%}
 .login-art:after{background:linear-gradient(180deg,#0b151a20,#10181285 45%,#101812ef)}
 .login-story{position:absolute;top:50%;bottom:auto;left:8%;width:45%;max-width:none;transform:translateY(-50%);text-shadow:0 2px 15px #0008}
 .login-story .game-subtitle{font-size:19px;letter-spacing:.18em;color:var(--gold);margin-bottom:13px}
@@ -68,7 +68,7 @@
 @media(max-width:720px){
  .brand strong{font-size:14px!important;letter-spacing:0!important}.brand small{font-size:9px!important}
  .login{display:block;min-height:100svh}.login-art{height:285px;min-height:285px;border:0;border-bottom:1px solid var(--line)}
- .login-art .scene-image{object-position:48% 28%}.login-story{display:block;top:45px;left:25px;right:20px;width:auto;transform:none}
+ .login-art .scene-image{object-position:50% 35%}.login-story{display:block;top:45px;left:25px;right:20px;width:auto;transform:none}
  .login-story .game-subtitle{font-size:16px;margin-bottom:8px}.login-story h1{font-size:clamp(32px,8.7vw,43px);margin:0 0 18px;line-height:1.35}
  .story-line{margin-bottom:15px;width:33px}.login-story p:last-child{font-size:12px;line-height:1.8}
  .login-form-panel{padding:32px 25px 42px}.loginform{max-width:440px}.loginform .brand{display:none}.loginform h2{font-size:25px}

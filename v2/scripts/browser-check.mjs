@@ -17,7 +17,7 @@ async function newPage(width=390,height=844){
    await handler({method:req.method(),url:u.pathname+u.search,headers:{...await req.allHeaders(),host:'ops.test'},body:req.postData()||'{}'},{setHeader(k,v){headers[k]=v;},status(n){status=n;return this;},json(v){body=v;}});
    await route.fulfill({status,headers,body:JSON.stringify(body)});return;
   }
-  try{const file=u.pathname==='/'?'index.html':u.pathname.slice(1),ext=path.extname(file);await route.fulfill({body:await readFile(new URL(file,root)),contentType:({'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.jpg':'image/jpeg','.json':'application/json','.svg':'image/svg+xml'})[ext]||'text/plain'});}catch{await route.fulfill({status:404,body:'Not found'});}
+  try{const file=u.pathname==='/'?'index.html':u.pathname.slice(1),ext=path.extname(file);await route.fulfill({body:await readFile(new URL(file,root)),contentType:({'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.jpg':'image/jpeg','.webp':'image/webp','.json':'application/json','.svg':'image/svg+xml'})[ext]||'text/plain'});}catch{await route.fulfill({status:404,body:'Not found'});}
  });
  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(15000);return page;
 }

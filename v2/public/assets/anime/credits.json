@@ -34,6 +34,11 @@
       "title": "갑옷거인 — 애니메이션 장면",
       "url": "https://anime.everyeye.it/notizie/chi-gigante-corazzato-alla-scoperta-guerrieri-de-attacco-giganti-480323.html",
       "image": "https://images.everyeye.it/img-notizie/chi-gigante-corazzato-scoperta-guerrieri-de-attacco-giganti-v4-480323.jpg"
+    },
+    {
+      "title": "조사병단 대열의 경례 — SlashFilm",
+      "url": "https://www.slashfilm.com/1170975/why-attack-on-titan-drew-inspiration-from-real-history/",
+      "image": "https://www.slashfilm.com/img/gallery/why-attack-on-titan-drew-inspiration-from-real-history/l-intro-1674064382.jpg"
     }
   ],
   "assets": [
@@ -84,6 +89,11 @@
     {
       "file": "/assets/anime/horizon.jpg",
       "reusedFrom": "V1 public/scenes/horizon.jpg"
+    },
+    {
+      "file": "/assets/anime/scout-ranks.webp",
+      "source": "https://www.slashfilm.com/1170975/why-attack-on-titan-drew-inspiration-from-real-history/",
+      "description": "입장 화면 — 조사병단 대열의 경례. 원본 1600×900을 WebP로 압축."
     }
   ],
   "referencePages": [
