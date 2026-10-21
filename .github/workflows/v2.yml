@@ -1,0 +1,33 @@
+name: V2 isolated validation
+on:
+  push:
+    branches: [feat/field-ops-v2]
+  pull_request:
+    paths: ['v2/**', '.github/workflows/v2.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: v2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: npm run check && npm test
+      - run: npm install --no-save --ignore-scripts playwright@1.62.1
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/browser-check.mjs
+      - run: node scripts/admin-check.mjs
+      - run: node scripts/captain-check.mjs
+      - run: node scripts/qr-camera-check.mjs
+      - run: node scripts/operations-check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v2-browser-evidence
+          path: v2/test-results

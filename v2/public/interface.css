@@ -1,0 +1,86 @@
+/* 참가자 화면: V1의 정돈된 배치와 짧은 작전 안내. */
+.brand strong{font-family:var(--serif);font-size:17px;letter-spacing:-.3px;line-height:1.5}
+.brand small{color:var(--gold);letter-spacing:.12em;font-size:10px}
+.login{position:relative;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);min-height:100svh;padding:0;background:var(--paper)}
+.login-art{position:relative;height:auto;min-height:100svh;border-right:1px solid var(--line)}
+.login-art .scene-image{opacity:.75;object-position:50% 35%}
+.login-art:after{background:linear-gradient(180deg,#0b151a20,#10181285 45%,#101812ef)}
+.login-story{position:absolute;top:50%;bottom:auto;left:8%;width:45%;max-width:none;transform:translateY(-50%);text-shadow:0 2px 15px #0008}
+.login-story .game-subtitle{font-size:19px;letter-spacing:.18em;color:var(--gold);margin-bottom:13px}
+.login-story h1{font-family:var(--serif);font-size:clamp(38px,4.4vw,66px);font-weight:600;line-height:1.4;letter-spacing:-.04em;word-break:keep-all;margin:0 0 28px}
+.story-line{width:44px;height:1px;background:var(--gold);margin-bottom:23px}
+.login-story p:last-child{font-size:14px;line-height:1.95;color:#d1d7c5}
+.login-form-panel{display:flex;align-items:center;justify-content:center;padding:60px 40px;background:linear-gradient(140deg,#171e18,#101612)}
+.loginform{display:block;align-self:auto;width:100%;max-width:370px;margin:0;padding:0;background:none;border-radius:0;box-shadow:none}
+.loginform>*{width:100%;margin-left:0;margin-right:0}
+.loginform .brand{margin-bottom:36px;color:var(--ink)}
+.loginform .brand img{width:37px;height:44px}
+.loginform .brand strong{font-size:20px}
+.loginform .brand small{color:var(--gold);font-size:11px}
+.loginform h2{font-family:var(--serif);font-size:28px;font-weight:500;letter-spacing:-1px;margin:0 0 7px}
+.loginform>.muted{font-size:12px;margin-bottom:27px}
+.loginform label{display:block;margin:17px 0 7px;color:var(--muted);font-size:12px;font-weight:500}
+.loginform input,.loginform select{width:100%;min-height:46px}
+.loginform .btn{width:100%;min-height:46px;margin:26px 0 0;border-radius:3px;box-shadow:none;transform:none}
+.loginform #codewrap[hidden]{display:none}
+.headquarters{display:flex;align-items:flex-start;gap:22px;padding:17px 20px;margin-bottom:18px;border:1px solid #576247;background:#1e281d;border-radius:3px}
+.hq-label{display:flex;align-items:center;gap:8px;color:var(--gold);white-space:nowrap}
+.hq-label h2{font-size:14px;font-weight:600}
+.hq-messages{min-width:0;flex:1;font-size:13px;overflow-wrap:anywhere}
+.hq-messages .urgent{color:#f0b187}
+.hq-messages .urgent strong{font-size:11px;border:1px solid #9a674c;padding:2px 6px;margin-right:5px}
+.hq-messages details{margin:10px 0 0;font-size:11px;color:var(--muted)}
+.operation-strip{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;margin:0 0 13px}
+.operation-strip strong{font-weight:500;color:var(--gold)}
+.operation-strip span{color:var(--muted)}
+.operation-strip b{font:500 21px/1.3 ui-monospace,monospace;color:var(--ink);margin-left:8px;font-variant-numeric:tabular-nums}
+.dashboard-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+.undefeated .scene-image{filter:grayscale(1);opacity:.72}
+.sector-tile.undefeated:after{background:linear-gradient(0deg,#111b14fa,#111b1444)}
+.titan-cards{align-items:stretch}
+.titan-card{display:flex;flex-direction:column;min-width:0}
+.titan-card .scene{flex:none}
+.titan-card .cardbody{display:flex;flex-direction:column;flex:1;align-items:flex-start}
+.cardbody .titan-brief{color:#e0e4d5;font-size:13px;line-height:1.8}
+.cardbody .titan-description{font-size:12px;line-height:1.9;margin:6px 0 20px;word-break:keep-all;overflow-wrap:anywhere}
+.inherited-ability{width:100%;border-top:1px solid var(--line);padding-top:13px;margin-top:auto;color:var(--muted)}
+.inherited-ability span{display:block;font-size:10px;margin-bottom:3px}
+.inherited-ability strong{font-size:14px;font-weight:500}
+.inherited-ability.unlocked{color:#d4dcad}
+.collection-progress .panelhead{margin-bottom:0}
+.collection-progress .muted{font-size:12px;margin-top:5px}
+.collection-progress progress{margin-bottom:0}
+.bonus-dispatch{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:21px 23px;margin-bottom:18px;border:1px solid #a3af77;border-left:4px solid var(--gold);background:linear-gradient(120deg,#303a23,#1c291d);border-radius:3px;animation:enter .3s ease-out}
+.dispatch-tag{font-size:11px;color:#d8dfad;letter-spacing:.06em;font-weight:650}
+.bonus-dispatch h2{font-family:var(--serif);font-size:23px;margin:4px 0 7px}
+.bonus-dispatch p{font-size:13px;line-height:1.8;overflow-wrap:anywhere}
+.bonus-dispatch small{display:block;margin-top:7px}
+.bonus-dispatch .btn{flex:none;white-space:nowrap}
+#bonus-alert{position:fixed;inset:0;width:min(460px,calc(100% - 36px));max-height:calc(100svh - 48px);overflow:auto;margin:auto;padding:30px;border:1px solid #a3af77;border-top:3px solid var(--gold);border-radius:4px;background:#1b261b;color:var(--ink);box-shadow:0 25px 100px #0009;animation:enter .25s ease-out}
+#bonus-alert::backdrop{background:#07100bcc;backdrop-filter:blur(5px)}
+#bonus-alert h2{font-family:var(--serif);font-size:29px;margin:12px 0 14px}
+#bonus-alert p{line-height:1.9;overflow-wrap:anywhere}
+#bonus-alert .muted{font-size:12px;margin-top:16px}
+#bonus-alert .actions{margin-top:24px;gap:10px}
+#bonus-alert .btn{flex:1}
+.scorestamp{transform:none;font-weight:650}
+@media(min-width:1101px) and (max-width:1250px){.titan-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){
+ .brand strong{font-size:14px!important;letter-spacing:0!important}.brand small{font-size:9px!important}
+ .login{display:block;min-height:100svh}.login-art{height:285px;min-height:285px;border:0;border-bottom:1px solid var(--line)}
+ .login-art .scene-image{object-position:50% 35%}.login-story{display:block;top:45px;left:25px;right:20px;width:auto;transform:none}
+ .login-story .game-subtitle{font-size:16px;margin-bottom:8px}.login-story h1{font-size:clamp(32px,8.7vw,43px);margin:0 0 18px;line-height:1.35}
+ .story-line{margin-bottom:15px;width:33px}.login-story p:last-child{font-size:12px;line-height:1.8}
+ .login-form-panel{padding:32px 25px 42px}.loginform{max-width:440px}.loginform .brand{display:none}.loginform h2{font-size:25px}
+ .loginform>.muted{margin-bottom:23px}.loginform .btn{margin-top:24px}
+ .headquarters{display:block;padding:14px 16px;margin-bottom:15px}.hq-label{margin-bottom:7px}.hq-label h2{font-size:13px}.hq-messages{font-size:12px}
+ .operation-strip{font-size:11px;margin-bottom:12px}.operation-strip b{font-size:19px;margin-left:5px}
+ .dashboard-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.dashboard-stats .stat{padding:13px 9px;border-bottom:0;border-right:1px solid var(--line)}
+ .dashboard-stats .stat:last-child{border-right:0}.dashboard-stats .value{font-size:24px}.dashboard-stats .label{font-size:9px;letter-spacing:0;word-break:keep-all}.dashboard-stats .value small{font-size:9px}
+ .titan-cards{grid-template-columns:1fr}.titan-cards .scene{aspect-ratio:16/9}.titan-cards .cardbody{padding:20px}.titan-cards h3{font-size:21px}
+ .cardbody .titan-brief{font-size:13px}.cardbody .titan-description{font-size:12px}.collection-progress .panelhead{align-items:flex-start}.collection-progress .panelhead h2{font-size:17px}.collection-progress .muted{font-size:11px}
+ .bonus-dispatch{display:block;padding:18px;margin-bottom:15px}.bonus-dispatch .btn{width:100%;margin-top:16px}.bonus-dispatch h2{font-size:23px}
+ #bonus-alert{padding:25px 22px}#bonus-alert h2{font-size:26px}
+ .top-meta{gap:6px}.top-meta .teamchip{font-size:9px}.pagehead h1{font-size:27px}
+}
+@media(prefers-reduced-motion:reduce){#bonus-alert,.bonus-dispatch{animation:none}}

@@ -1,0 +1,114 @@
+{
+  "copyright": "©諫山創・講談社／「進撃の巨人」製作委員会 / The Final Season製作委員会",
+  "description": "진격의 거인 실제 애니메이션 장면을 사용하는 비상업적 야유회 팬 프로젝트입니다. 이미지의 저작권은 원 권리자에게 있습니다.",
+  "sources": [
+    {
+      "title": "공식 애니메이션 Season 1 장면",
+      "url": "https://shingeki.tv/season1/story/"
+    },
+    {
+      "title": "공식 애니메이션 Season 3 장면",
+      "url": "https://shingeki.tv/season3/story/"
+    },
+    {
+      "title": "cart 거인 장면",
+      "url": "https://anime.everyeye.it/notizie/attack-on-titan-gigante-carro-scarso-serie-687786.html",
+      "image": "https://images.everyeye.it/img-notizie/attack-on-titan-gigante-carro-scarso-serie-v4-687786.jpg"
+    },
+    {
+      "title": "jaw 거인 장면",
+      "url": "https://x.com/AOT_Arabic/status/1338760459063844864",
+      "image": "https://pbs.twimg.com/media/EpQ7iJqWEAIrET4.jpg"
+    },
+    {
+      "title": "warhammer 거인 장면",
+      "url": "https://www.cinemablend.com/television/attack-on-titan-the-5-best-moments-from-season-4-part-1",
+      "image": "https://cdn.mos.cms.futurecdn.net/AoHrkNxorUpdZ4R4BvsPwH.jpg"
+    },
+    {
+      "title": "여성형 거인 — ABEMA 공식 회차 이미지",
+      "url": "https://abema.tv/video/episode/30-3_s0_p22",
+      "image": "https://image.p-c2-x.abema-tv.com/image/programs/30-3_s0_p22/thumb002.png?height=720&quality=75&version=1731984726&width=1280"
+    },
+    {
+      "title": "갑옷거인 — 애니메이션 장면",
+      "url": "https://anime.everyeye.it/notizie/chi-gigante-corazzato-alla-scoperta-guerrieri-de-attacco-giganti-480323.html",
+      "image": "https://images.everyeye.it/img-notizie/chi-gigante-corazzato-scoperta-guerrieri-de-attacco-giganti-v4-480323.jpg"
+    },
+    {
+      "title": "조사병단 대열의 경례 — SlashFilm",
+      "url": "https://www.slashfilm.com/1170975/why-attack-on-titan-drew-inspiration-from-real-history/",
+      "image": "https://www.slashfilm.com/img/gallery/why-attack-on-titan-drew-inspiration-from-real-history/l-intro-1674064382.jpg"
+    },
+    {
+      "title": "입체기동 출격 이미지 — 사용자 첨부와 동일한 이미지",
+      "url": "https://www.inverse.com/article/30455-attack-on-titan-movie-live-action-american-english-mikasa-eren",
+      "image": "https://imgix.bustle.com/inverse/c2/36/fb/38/df96/4a9a/97c3/b15626ee9343/attack-on-titan-season-2jpg.jpeg"
+    }
+  ],
+  "assets": [
+    {
+      "file": "/assets/anime/scouts.jpg",
+      "reusedFrom": "V1 public/scenes/scouts.jpg"
+    },
+    {
+      "file": "/assets/anime/colossal.jpg",
+      "reusedFrom": "V1 public/scenes/colossal.jpg"
+    },
+    {
+      "file": "/assets/anime/formation.jpg",
+      "reusedFrom": "V1 public/scenes/formation.jpg"
+    },
+    {
+      "file": "/assets/anime/cart.jpg",
+      "reusedFrom": "V1 public/scenes/cart.jpg"
+    },
+    {
+      "file": "/assets/anime/beast.jpg",
+      "reusedFrom": "V1 public/scenes/beast.jpg"
+    },
+    {
+      "file": "/assets/anime/female.jpg",
+      "reusedFrom": "V1 public/scenes/female.jpg"
+    },
+    {
+      "file": "/assets/anime/jaw.jpg",
+      "reusedFrom": "V1 public/scenes/jaw.jpg"
+    },
+    {
+      "file": "/assets/anime/armor.jpg",
+      "reusedFrom": "V1 public/scenes/armor.jpg"
+    },
+    {
+      "file": "/assets/anime/warhammer.jpg",
+      "reusedFrom": "V1 public/scenes/warhammer.jpg"
+    },
+    {
+      "file": "/assets/anime/wall.jpg",
+      "reusedFrom": "V1 public/scenes/wall.jpg"
+    },
+    {
+      "file": "/assets/anime/command.jpg",
+      "reusedFrom": "V1 public/scenes/command.jpg"
+    },
+    {
+      "file": "/assets/anime/horizon.jpg",
+      "reusedFrom": "V1 public/scenes/horizon.jpg"
+    },
+    {
+      "file": "/assets/anime/scout-ranks.webp",
+      "source": "https://www.slashfilm.com/1170975/why-attack-on-titan-drew-inspiration-from-real-history/",
+      "description": "입장 화면 — 조사병단 대열의 경례. 원본 1600×900을 WebP로 압축."
+    },
+    {
+      "file": "/assets/anime/entry-action.webp",
+      "source": "https://www.inverse.com/article/30455-attack-on-titan-movie-live-action-american-english-mikasa-eren",
+      "description": "입장 화면 — 사용자 지정 이미지와 동일한 에렌·미카사·아르민·리바이의 입체기동 출격 이미지."
+    }
+  ],
+  "referencePages": [
+    "https://shingeki.tv/season1/story/",
+    "https://shingeki.tv/season3/story/",
+    "https://shingeki.tv/final/keyword/"
+  ]
+}

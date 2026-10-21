@@ -1,0 +1,1 @@
+{"name":"field-ops-v2","version":"2.0.0","private":true,"type":"module","engines":{"node":">=22"},"scripts":{"dev":"node dev.mjs","test":"node scripts/checks.mjs","check":"node --check public/app.js && node --check api/ops.js"}}

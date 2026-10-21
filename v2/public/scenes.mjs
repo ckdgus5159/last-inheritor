@@ -1,0 +1,1 @@
+export const SCENES=["/assets/anime/scouts.jpg", "/assets/anime/colossal.jpg", "/assets/anime/formation.jpg", "/assets/anime/cart.jpg", "/assets/anime/beast.jpg", "/assets/anime/female.jpg", "/assets/anime/jaw.jpg", "/assets/anime/armor.jpg", "/assets/anime/warhammer.jpg", "/assets/anime/entry-action.webp", "/assets/anime/command.jpg", "/assets/anime/horizon.jpg"];
