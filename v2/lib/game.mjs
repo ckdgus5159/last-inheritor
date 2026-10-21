@@ -17,7 +17,7 @@ export function transition(state,actor,action,p={},now=Date.now(),rng=randomInt)
  let s=structuredClone(state);expire(s,now);let target=actor.team;
  if(action==='claim'){const t=getTeam(s,actor.team);ensure(actor.role==='captain'&&actor.generation===t.generation,'현재 분대장 코드로 입장하세요.',403);t.leader=actor.sid;}
  else if(['report','qrClaim','bonusStart','bonusSubmit'].includes(action)){
-  captain(s,actor);ensure(active(s,now),'정규 라운드 진행 중에만 가능합니다.');const t=s.teams[actor.team];
+  captain(s,actor);if(action!=='qrClaim')ensure(active(s,now),'정규 라운드 진행 중에만 가능합니다.');const t=s.teams[actor.team];
   if(action==='report'){if(!t.reports[s.round]||now<t.reports[s.round].at)t.reports[s.round]={titan:assigned(actor.team,s.round).id,at:now,elapsed:now-s.clock.start,score:null};}
   if(action==='qrClaim'){const q=s.qr.find(q=>q.token===p.token);ensure(q,'보급품 QR을 확인하세요.',404);ensure(!q.claim,'이미 사용된 QR입니다');ensure(q.enabled,'비활성화된 QR입니다');ensure(s.qr.filter(q=>q.claim?.team===actor.team).length<4,'분대별 QR 획득은 네 개까지입니다. 이 QR은 소모되지 않았습니다.');q.claim={team:actor.team,at:now,points:q.value};}
   if(action==='bonusStart'){const b=t.bonuses[s.round];ensure(b&&['timer','tap'].includes(b.kind),'웹 미니게임을 확인하세요.');ensure(b.status==='issued','이미 시작한 도전입니다. 재도전할 수 없습니다.');ensure(s.clock.end-now>=10000,'도전을 완료할 시간이 부족합니다.');if(b.kind==='tap'){b.durationMs=TAP_DURATION_MS;b.target=s.config.tapTarget;b.name='10초 연타';b.instructions=`10초 동안 ${b.target}회 이상 터치`;}b.status='running';b.started=now;b.attempt=token();}
