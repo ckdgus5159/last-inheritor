@@ -1,3 +1,5 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {supplyTokenFromQR} from '../public/qr-scanner.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {supplyTokenFromQR,preferredRearCamera} from '../public/qr-scanner.mjs';
 const origin='https://ops.test',token='A'.repeat(32);
 test('행사 QR 주소에서만 토큰을 추출',()=>{assert.equal(supplyTokenFromQR(origin+'/#supply='+token,origin),token);for(const raw of ['https://evil.test/#supply='+token,'https://ops.test.evil.test/#supply='+token,origin+'/other#supply='+token,'javascript:alert(1)','not a url',origin+'/#supply=short',origin+'/#supply='+token+'&supply='+token,'https://user:pass@ops.test/#supply='+token])assert.equal(supplyTokenFromQR(raw,origin),null);});
+
+test('후면 기본 카메라를 초광각·망원·전면보다 우선 선택',()=>{const camera=(deviceId,label)=>({deviceId,label,kind:'videoinput'}),devices=[camera('dual','Back Dual Wide Camera'),camera('ultra','Back Ultra Wide Camera'),camera('front','Front Camera'),camera('tele','Back Telephoto Camera'),camera('main','Back Camera')];assert.equal(preferredRearCamera(devices).deviceId,'main');assert.equal(preferredRearCamera([camera('u','후면 초광각 카메라'),camera('m','후면 카메라')]).deviceId,'m');assert.equal(preferredRearCamera([camera('blank','')]),undefined);});
