@@ -67,9 +67,9 @@
 .boss-control .boss .panelhead{display:block}
 .boss-control .bossteams{display:grid;grid-template-columns:1fr}
 .boss-control .bossteams span{font-size:10px}
-.captain-links .links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.captain-links label{min-width:0;font-size:11px}
-.captain-links input{display:block;margin:5px 0 0;min-width:0;width:100%;font-size:11px}
+.captain-codes .code-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.captain-codes label{min-width:0;font-size:11px}
+.captain-codes input{display:block;margin:5px 0 0;min-width:0;width:100%;font-size:11px}
 .admin-details>details{margin:0}
 .admin-details>details>summary{font-size:15px;font-weight:650;line-height:1.7;letter-spacing:-.025em}
 .admin-details>details[open]>summary{padding-bottom:17px;margin-bottom:18px;border-bottom:1px solid var(--line)}
@@ -124,7 +124,7 @@
  .admin-team-head h3{font-size:17px}
  .admin-console .scorebuttons .btn{font-size:12px;min-height:45px}
  .bonus-eligibility{min-height:0}
- .captain-links .links{grid-template-columns:1fr}
+ .captain-codes .code-grid{grid-template-columns:1fr}
  .qr-admin-row{grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:13px}
  .qr-identity{grid-column:1;grid-row:1}
  .qr-row-actions{grid-column:2;grid-row:1;gap:6px}
@@ -136,3 +136,5 @@
  #settings .criteriarow{grid-template-columns:1fr;gap:10px}
  .admin-details>details>summary{font-size:13px}
 }
+
+.captain-code>div{display:flex;align-items:center;gap:8px}.captain-codes .captain-code input{font-family:var(--font-score),monospace;font-size:22px;letter-spacing:.09em;font-weight:600;flex:1;width:0}.captain-code .btn{flex-shrink:0;white-space:nowrap}.captain-codes .muted{line-height:1.7}

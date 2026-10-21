@@ -12,10 +12,10 @@ export function scores(s,id){const t=s.teams[id],base=Object.values(t.reports).r
 export function eligibility(s,id,now){const r=s.teams[id].reports[s.round];return active(s,now)&&r?.score===10&&r.elapsed<=s.config.limits[r.titan]*1000&&!s.teams[id].bonuses[s.round];}
 const admin=a=>ensure(a.role==='admin','관리자만 실행할 수 있습니다.',403);
 const getTeam=(s,id)=>{ensure(TEAMS.includes(id),'분대를 확인하세요.',400);return s.teams[id];};
-function captain(s,a){ensure(a.role==='captain'&&TEAMS.includes(a.team),'분대장만 실행할 수 있습니다.',403);ensure(s.teams[a.team].leader===a.sid&&s.teams[a.team].generation===a.generation,'분대장 권한이 해제되었습니다. 새 링크로 입장하세요.',403);}
+function captain(s,a){ensure(a.role==='captain'&&TEAMS.includes(a.team),'분대장만 실행할 수 있습니다.',403);ensure(s.teams[a.team].leader===a.sid&&s.teams[a.team].generation===a.generation,'분대장 권한이 해제되었습니다. 현재 코드로 다시 입장하세요.',403);}
 export function transition(state,actor,action,p={},now=Date.now(),rng=randomInt){
  let s=structuredClone(state);expire(s,now);let target=actor.team;
- if(action==='claim'){const t=getTeam(s,actor.team);ensure(actor.role==='captain'&&actor.generation===t.generation,'새 분대장 링크를 사용하세요.',403);ensure(!t.leader||t.leader===actor.sid,'이미 지정된 분대장이 있습니다. 관리자에게 재지정을 요청하세요.');t.leader=actor.sid;}
+ if(action==='claim'){const t=getTeam(s,actor.team);ensure(actor.role==='captain'&&actor.generation===t.generation,'현재 분대장 코드로 입장하세요.',403);t.leader=actor.sid;}
  else if(['report','qrClaim','bonusStart','bonusSubmit'].includes(action)){
   captain(s,actor);ensure(active(s,now),'정규 라운드 진행 중에만 가능합니다.');const t=s.teams[actor.team];
   if(action==='report'){if(!t.reports[s.round]||now<t.reports[s.round].at)t.reports[s.round]={titan:assigned(actor.team,s.round).id,at:now,elapsed:now-s.clock.start,score:null};}

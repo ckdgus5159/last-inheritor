@@ -1,0 +1,40 @@
+import {readFile,mkdir} from 'node:fs/promises';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {createHandler} from '../api/ops.js';
+import {memoryStore} from '../lib/store.mjs';
+const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
+const browser=await chromium.launch({args:['--no-sandbox']}),store=memoryStore(),handler=createHandler(store,{secret:'captain-check-only',admin:'check-admin'}),errors=[];
+const origin='https://captain.test';
+async function newPage(width=390){const ctx=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});await ctx.route(origin+'/**',async route=>{
+ const req=route.request(),url=new URL(req.url());
+ if(url.pathname==='/api/ops'){let status=200,body,headers={'Content-Type':'application/json'};await handler({method:req.method(),url:url.pathname+url.search,headers:{...await req.allHeaders(),host:'captain.test'},body:req.postData()?JSON.parse(req.postData()):{}},{setHeader(k,v){headers[k]=v;},status(n){status=n;return this;},json(v){body=v;}});return route.fulfill({status,headers,body:JSON.stringify(body)});}
+ try{const file=url.pathname==='/'?'index.html':url.pathname.slice(1);await route.fulfill({body:await readFile(new URL('../public/'+file,import.meta.url)),contentType:({'.html':'text/html','.css':'text/css','.js':'text/javascript','.mjs':'text/javascript','.woff2':'font/woff2','.svg':'image/svg+xml','.webp':'image/webp','.jpg':'image/jpeg'})[path.extname(file)]||'text/plain'});}catch{await route.fulfill({status:404,body:'Not found'});}
+ });const page=await ctx.newPage();page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(12000);await page.goto(origin);await page.locator('#login').waitFor();return page;}
+async function idle(page){await page.waitForFunction(()=>document.querySelector('.main')?.getAttribute('aria-busy')==='false');}
+async function login(page,role,team,code){await page.locator('#role').selectOption(role);if(role!=='admin')await page.locator('#team').selectOption(team);if(role!=='member')await page.locator('#code').fill(code);await page.locator('#login button[type=submit]').click();}
+async function post(page,action,payload={}){return page.evaluate(async({action,payload})=>{const r=await fetch('/api/ops',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,payload})});const d=await r.json();if(!r.ok)throw Error(d.error);return d;},{action,payload});}
+let admin;
+try{
+ await mkdir('test-results',{recursive:true});admin=await newPage(1440);await login(admin,'admin',null,'check-admin');await admin.locator('.admin-console').waitFor();
+ await admin.locator('[data-action=captainCodes]').click();await admin.locator('#captain-codes').waitFor();await idle(admin);
+ const original=await admin.locator('.captain-code input').evaluateAll(els=>els.map(e=>e.value));assert.equal(original.length,4);assert.equal(new Set(original).size,4);
+ for(const width of [360,390,900,1440]){await admin.setViewportSize({width,height:1000});assert.ok(await admin.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));}
+ await admin.locator('#captain-codes').scrollIntoViewIfNeeded();await admin.screenshot({path:'test-results/captain-codes-mobile.png'});
+ await admin.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:undefined,configurable:true}));await admin.locator('.captain-code').first().getByRole('button',{name:'복사',exact:true}).click();assert.equal(await admin.locator('#captain-code-A').evaluate(e=>e.selectionEnd-e.selectionStart),original[0].length);
+ await admin.locator('[data-ui=hidecodes]').click();assert.equal(await admin.locator('#captain-codes').count(),0);await admin.locator('[data-action=captainCodes]').click();await admin.locator('#captain-codes').waitFor();
+ const captain=await newPage();await captain.locator('#role').selectOption('captain');assert.equal(await captain.locator('#codewrap').isVisible(),true);assert.equal(await captain.locator('#team').isEnabled(),true);assert.equal(await captain.locator('#code').evaluate(e=>e.required),true);assert.equal(await captain.locator('#code-label').textContent(),'분대장 코드');
+ for(const width of [360,390,900,1440]){await captain.setViewportSize({width,height:1000});assert.ok(await captain.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));}
+ await captain.setViewportSize({width:390,height:1000});await captain.screenshot({path:'test-results/captain-login-mobile.png'});
+ await login(captain,'captain','A',original[1]);await captain.locator('.error').waitFor();assert.equal(await captain.locator('#role').inputValue(),'captain');assert.equal(await captain.locator('#team').inputValue(),'A');assert.equal(await captain.locator('#code').inputValue(),'');
+ await captain.locator('#code').fill(' '+original[0].toLowerCase().replace('-',' ')+' ');await captain.locator('#login button').click();await captain.locator('.teamchip').waitFor();assert.match(await captain.locator('.teamchip').textContent(),/A분대 · 분대장/);assert.equal(await captain.locator('[data-tab=admin]').count(),0);
+ await post(admin,'start');await captain.locator('[data-tab=titans]').click();await captain.getByRole('button',{name:'미션 완료 보고',exact:true}).click();await idle(captain);assert.ok((await store.read('live')).data.teams.A.reports[1]);
+ const qr=(await store.read('live')).data.qr[0];await captain.goto(origin+'/?scan=1#supply='+qr.token);await captain.getByRole('button',{name:'보급품 확보',exact:true}).click();await idle(captain);assert.equal((await store.read('live')).data.qr[0].claim.team,'A');const before=(await store.read('live')).data;
+ await admin.locator('#captain-tools-A>summary').click();admin.once('dialog',d=>d.accept());await admin.locator('#captain-tools-A [data-action=revokeCaptain]').click();await idle(admin);await admin.waitForFunction(old=>document.querySelector('#captain-code-A')?.value!==old,original[0]);const next=await admin.locator('.captain-code input').evaluateAll(els=>els.map(e=>e.value));assert.notEqual(next[0],original[0]);assert.deepEqual(next.slice(1),original.slice(1));await captain.locator('#login').waitFor();
+ await login(captain,'captain','A',original[0]);await captain.locator('.error').waitFor();await login(captain,'captain','A',next[0]);await captain.locator('.teamchip').waitFor();
+ await captain.locator('[data-ui=logout]').click();await captain.locator('#login').waitFor();await login(captain,'captain','A',next[0]);await captain.locator('.teamchip').waitFor();
+ const other=await newPage();await login(other,'captain','A',next[0]);await other.locator('.teamchip').waitFor();await captain.locator('#login').waitFor();assert.match(await captain.locator('.error').textContent(),/권한이 변경/);
+ const after=(await store.read('live')).data;assert.deepEqual(after.teams.A.reports,before.teams.A.reports);assert.deepEqual(after.qr,before.qr);
+ await admin.locator('[data-ui=mode]').click();await idle(admin);assert.equal(await admin.locator('#captain-codes').count(),0);await admin.locator('[data-action=captainCodes]').click();await admin.locator('#captain-codes').waitFor();const rehearsal=await admin.locator('.captain-code input').evaluateAll(els=>els.map(e=>e.value));assert.ok(rehearsal.every((c,i)=>c!==next[i]));assert.match(await admin.locator('#captain-codes').textContent(),/리허설용 코드/);
+ assert.deepEqual(errors,[]);console.log('PASS captain: 360/390/900/1440px code login/admin cards, copy fallback/hide, wrong squad and old code, report/QR, rotation, logout/reentry, latest device only, live/rehearsal code separation, scores preserved, no JS errors');
+}catch(e){if(admin)await admin.screenshot({path:'test-results/captain-failure.png',fullPage:true});throw e;}finally{await browser.close();}

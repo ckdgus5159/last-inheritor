@@ -9,12 +9,13 @@
 - 규칙·API 검증: `npm test`
 - 브라우저 검증: `npm install --no-save --ignore-scripts playwright@1.62.1`, `npx playwright install --with-deps chromium`, `node scripts/browser-check.mjs`
 - 관리자 전체 흐름 검증: `node scripts/admin-check.mjs`
+- 분대장 코드 입장 검증: `node scripts/captain-check.mjs`
 - 배포: 이 디렉터리만 별도 Vercel 프로젝트의 루트로 사용합니다. 루트 V1 설정은 수정하지 않습니다.
 
 ## 행사 당일
 
 1. 관리자 입장 → **독립 리허설**에서 한 차례 점검.
-2. 실운영 복귀 → 판정 기준 설정 → 분대장 링크 전달 → QR 12개 인쇄·설치.
+2. 실운영 복귀 → 판정 기준 설정 → 분대장 코드 확인·안내 → QR 12개 인쇄·설치.
 3. 작전 개시 → 보고 확인 → 6·8·10점 승인 → 자격 충족 시 보너스 선택 지급.
 4. 매 라운드 종료·다음 라운드는 본부에서 수동으로 전환.
 5. 3R 종료 → 초대형 거인전 → 네 분대 성공 승인 또는 비상 종료 → 4R.

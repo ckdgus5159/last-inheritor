@@ -79,7 +79,7 @@ try{
  // Separate authenticated browser sessions verify delivery to the whole squad, including late arrivals.
  const memberA=await newPage(),memberB=await newPage(),captainA=await newPage(1440,1000);
  for(const [p,team] of [[memberA,'A'],[memberB,'B']]){await p.goto('https://ops.test/');await p.locator('#team').selectOption(team);await p.locator('button[type=submit]').click();await p.locator('[data-tab="dashboard"]').waitFor();}
- const {links}=await post(page,'captainLinks');const l=links.find(l=>l.team==='A');await captainA.goto('https://ops.test/'+l.fragment);await captainA.locator('button[type=submit]').click();await captainA.locator('[data-tab="dashboard"]').waitFor();
+ const {codes}=await post(page,'captainCodes');const c=codes.find(c=>c.team==='A');await captainA.goto('https://ops.test/');await captainA.locator('#role').selectOption('captain');await captainA.locator('#team').selectOption('A');await captainA.locator('#code').fill(c.code);await captainA.locator('button[type=submit]').click();await captainA.locator('[data-tab="dashboard"]').waitFor();
  await post(page,'start');await post(captainA,'report');await post(page,'approve',{team:'A',score:10});await post(page,'issueBonus',{team:'A'});
  for(const p of [memberA,captainA]){await p.locator('#bonus-alert[open]').waitFor();await p.locator('#dismiss-bonus').click();await p.locator('.bonus-dispatch').waitFor();}
  assert.equal(await memberB.locator('#bonus-alert').evaluate(el=>el.open),false,'other squad has no popup');assert.equal(await memberB.locator('.bonus-dispatch').count(),0);
