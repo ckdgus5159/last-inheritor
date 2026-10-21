@@ -53,7 +53,7 @@ try{
  await page.locator('[data-tab="supply"]').click();await page.getByRole('button',{name:'가상 QR 스캔 시험'}).click();await page.getByRole('button',{name:'보급품 확보',exact:true}).click();
  for(const width of [360,390,768,1440]){
   await page.setViewportSize({width,height:1000});
-  for(const tab of ['dashboard','titans','supply','results']){await page.locator(`[data-tab="${tab}"]`).click();await noOverflow(page,width+' '+tab);}
+  for(const tab of ['dashboard','titans','supply','results']){await page.locator(`[data-tab="${tab}"]`).click();await noOverflow(page,width+' '+tab);if(tab==='results'){assert.equal(await page.getByRole('heading',{name:'A분대 점수 상세',exact:true}).count(),1);assert.equal(await page.getByText(/추가 = min/).count(),0);}if(tab==='supply')assert.equal(await page.getByText('공원 곳곳의 보급품을 찾아라! 확보(스캔)는 분대장 기기에서 가능해요.',{exact:true}).count(),1);}
  }
  await page.locator('[data-tab="dashboard"]').click();await clearCelebration(page);
  assert.equal(await page.locator('.dashboard-stats .stat').count(),3);assert.equal(await page.locator('.sector-tile.undefeated').count(),5);
@@ -70,9 +70,9 @@ try{
  for(const kind of ['timer','tap']){
   await atomic(store,'rehearsal',s=>{s.teams.A.bonuses[1]={id:'test-'+kind,kind,name:kind,instructions:'브라우저 검증',status:'issued',points:0,penalty:0};return s;});
   await page.locator('#preview').selectOption('captain:A');await page.locator('#bonus-alert[open]').waitFor();await page.locator('#open-bonus').click();
-  await page.getByRole('button',{name:'한 번의 도전 시작!'}).click();await page.locator('[data-tab=dashboard]').click();await page.locator('[data-tab=supply]').click();await page.locator('[data-ui=miniact]').waitFor();
+  await page.getByRole('button',{name:'한 번의 도전 시작!'}).click();await page.locator('[data-tab=dashboard]').click();await page.locator('[data-tab=supply]').click();await page.locator('[data-ui=miniact]').waitFor();if(kind==='tap'){assert.equal((await store.read('rehearsal')).data.teams.A.bonuses[1].durationMs,10000);assert.equal(await page.getByRole('heading',{name:'10초 연타',exact:true}).count(),1);}
   if(kind==='timer'){await page.waitForTimeout(10000);await page.getByRole('button',{name:'지금 멈추기'}).click();}
-  else {for(let i=0;i<36;i++){await page.getByRole('button',{name:'진격! 터치!'}).click();await page.waitForTimeout(40);}await page.waitForTimeout(15000);}
+  else {for(let i=0;i<36;i++){await page.getByRole('button',{name:'빠르게 터치!'}).click();await page.waitForTimeout(40);}await page.waitForTimeout(10000);}
   await page.getByText('측정 결과',{exact:false}).waitFor();assert.ok(['success','failed'].includes((await store.read('rehearsal')).data.teams.A.bonuses[1].status));await page.locator('#preview').selectOption('');
  }
  assert.deepEqual((await store.read('live')).data,before,'rehearsal leaves live unchanged');

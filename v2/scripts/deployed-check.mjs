@@ -12,7 +12,7 @@ for(let round=1;round<=6;round++){
  for(const team of ['A','B','C','D']){await call('report',{},'captain:'+team);await call('approve',{team,score:10});await call('issueBonus',{team});}
  s=await get(true);
  const web=[];for(const team of ['A','B','C','D']){const b=s.teams[team].bonuses[round];if(['timer','tap'].includes(b.kind)){const x=await call('bonusStart',{},'captain:'+team);web.push({team,b:x.teams[team].bonuses[round]});}else if(b.kind==='roulette')await call('roulette',{team});else await call('fieldResult',{team,success:true});}
- if(web.length)await new Promise(r=>setTimeout(r,15100));for(const {team,b} of web)await call('bonusSubmit',{attempt:b.attempt,...(b.kind==='timer'?{elapsed:10000}:{taps:Array.from({length:35},(_,i)=>i*300)})},'captain:'+team);
+ if(web.length)await new Promise(r=>setTimeout(r,10100));for(const {team,b} of web)await call('bonusSubmit',{attempt:b.attempt,...(b.kind==='timer'?{elapsed:10000}:{taps:Array.from({length:35},(_,i)=>i*250)})},'captain:'+team);
  await call('endRound');if(round===3){await call('bossStart');for(const team of ['A','B','C','D'])await call('bossApprove',{team});assert.equal((await get(true)).boss.hp,0);}if(round<6)await call('nextRound');
 }
 await call('endGame');s=await call('publish');for(const t of s.ranking){assert.equal(t.base,60);assert.ok(t.total<=80&&t.extra<=20);}assert.equal(s.medals.length,4);assert.equal(fingerprint(await get(false)),before);
