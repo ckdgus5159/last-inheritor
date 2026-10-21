@@ -70,7 +70,7 @@ try{
  for(const kind of ['timer','tap']){
   await atomic(store,'rehearsal',s=>{s.teams.A.bonuses[1]={id:'test-'+kind,kind,name:kind,instructions:'브라우저 검증',status:'issued',points:0,penalty:0};return s;});
   await page.locator('#preview').selectOption('captain:A');await page.locator('#bonus-alert[open]').waitFor();await page.locator('#open-bonus').click();
-  await page.getByRole('button',{name:'한 번의 도전 시작!'}).click();
+  await page.getByRole('button',{name:'한 번의 도전 시작!'}).click();await page.locator('[data-tab=dashboard]').click();await page.locator('[data-tab=supply]').click();await page.locator('[data-ui=miniact]').waitFor();
   if(kind==='timer'){await page.waitForTimeout(10000);await page.getByRole('button',{name:'지금 멈추기'}).click();}
   else {for(let i=0;i<36;i++){await page.getByRole('button',{name:'진격! 터치!'}).click();await page.waitForTimeout(40);}await page.waitForTimeout(15000);}
   await page.getByText('측정 결과',{exact:false}).waitFor();assert.ok(['success','failed'].includes((await store.read('rehearsal')).data.teams.A.bonuses[1].status));await page.locator('#preview').selectOption('');

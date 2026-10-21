@@ -1,0 +1,138 @@
+/* 현장 운영: 좁은 화면에서도 승인·설정·입력 위치가 흔들리지 않게 한다. */
+[hidden]{display:none!important}
+.admin-main{padding:28px clamp(18px,2.7vw,38px) 40px}
+.admin-main .pagehead{margin-bottom:20px}
+.admin-console{container-type:inline-size;min-width:0}
+.admin-console h2{font-family:var(--font-ui);font-size:18px;font-weight:700;letter-spacing:-.04em;line-height:1.5}
+.admin-console .panel{padding:22px;margin-bottom:20px}
+.admin-console .panelhead{align-items:flex-start;margin-bottom:16px}
+.admin-console .btn{font-size:12px;min-height:42px;padding:9px 13px;white-space:nowrap;letter-spacing:-.025em}
+.admin-console .btn.small{min-height:38px;padding:7px 10px;font-size:11px}
+.admin-shell{max-width:1760px}
+.command-masthead{position:relative;isolation:isolate;height:104px;overflow:hidden;border:1px solid var(--line);border-radius:3px;margin-bottom:20px;background:#121b16}
+.command-masthead>.scene{position:absolute;inset:0;min-height:0;z-index:-2}
+.command-masthead:after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#101b12ed,#101b12a0 60%,#101b1250)}
+.command-masthead>div:not(.scene){padding:14px 24px}
+.command-masthead span{font-size:10px;letter-spacing:.12em;color:var(--gold)}
+.command-masthead h2{font-family:var(--font-display);font-weight:400;color:#f1efdf;font-size:21px;line-height:1.5;margin-top:7px}
+.command-controls .panelhead{gap:20px;align-items:center}
+.command-controls .muted{font-size:12px;line-height:1.8;margin-top:5px}
+.control-clock{text-align:right;flex:none;min-width:95px}
+.control-clock small{display:block;font-size:11px;color:var(--gold)}
+.control-clock .clock{display:block;font-family:var(--font-score);font-weight:700;font-size:45px;line-height:1.1;min-height:50px}
+.control-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:8px}
+.advanced-ops{margin:15px 0 0;font-size:11px;color:var(--muted)}
+.advanced-ops summary{font-weight:500}
+.admin-metrics{display:flex;flex-wrap:wrap;gap:12px 26px;border-top:1px solid var(--line);padding-top:15px;margin-top:20px;font-size:11px;color:var(--muted)}
+.admin-metrics b{font-family:var(--font-score);font-size:23px;color:var(--ink);margin-left:8px;line-height:1}
+.admin-workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-items:start}
+.admin-support{min-width:0}
+.admin-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.admin-card{min-width:0;padding:18px;background:#141e17;border:1px solid #3a493a;border-radius:3px;scroll-margin-top:95px}
+.admin-card.awaiting{border-color:#9aa775;box-shadow:inset 0 3px #9aa775}
+.admin-team-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.admin-team-head>div:first-child{display:flex;flex-wrap:wrap;gap:6px;align-items:baseline}
+.admin-team-head h3{font-family:var(--font-ui);font-size:17px;font-weight:700;line-height:1.5;letter-spacing:-.04em}
+.admin-team-head small{font-size:10px}
+.team-score{font:700 34px/1 var(--font-score);white-space:nowrap}
+.team-score small{font:400 11px/1.4 var(--font-ui);margin-left:5px}
+.admin-team-mission{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.admin-team-mission>strong{font-size:13px;font-weight:600}
+.admin-team-mission .pill{font-size:10px;padding:3px 7px}
+.report-time{color:var(--muted);font-size:11px;line-height:1.7;margin-top:8px}
+.scorebuttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:10px 0}
+.admin-console .scorebuttons .btn{min-width:0;font-size:12px;min-height:44px;padding:8px 5px;white-space:nowrap;line-height:1.4;flex:none}
+.bonus-eligibility{font-size:10px;line-height:1.8;color:var(--muted);margin-bottom:8px}
+.admin-console .bonus-issue{width:100%;font-size:12px}
+.captain-tools{border:0;padding-top:0;margin:10px 0 0;font-size:10px;color:var(--muted)}
+.captain-tools summary{font-weight:500}
+.captain-tools .btn{margin-top:12px}
+.team-bonus{margin-top:14px;padding:12px;font-size:12px}
+.team-bonus>.pill{margin-left:5px}
+.team-bonus p{font-size:11px;margin-top:7px;overflow-wrap:anywhere}
+.team-bonus .roulette{width:130px;height:130px;margin:18px auto;border-width:5px}
+.team-bonus .roulette:after{font-size:44px}
+.admin-support form>label{display:block;font-size:11px;margin-bottom:8px}
+.admin-support textarea{margin-bottom:10px;font-size:12px;line-height:1.8;min-height:105px}
+.admin-support .checkline{display:flex;align-items:center;gap:7px;margin-bottom:13px;font-size:11px}
+.checkline .check{margin:0;width:15px;height:15px}
+.last-announcement{border-top:1px solid var(--line);padding-top:13px;margin-top:16px}
+.last-announcement small{font-size:10px}
+.last-announcement p{font-size:11px;line-height:1.8;margin-top:5px;overflow-wrap:anywhere}
+.boss-control>.muted{font-size:11px}
+.boss-approvals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:15px}
+.boss-control .boss{padding:14px;margin:16px 0 0}
+.boss-control .boss .scene{height:125px;min-height:0}
+.boss-control .boss h2{font-size:16px}
+.boss-control .boss .panelhead{display:block}
+.boss-control .bossteams{display:grid;grid-template-columns:1fr}
+.boss-control .bossteams span{font-size:10px}
+.captain-links .links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.captain-links label{min-width:0;font-size:11px}
+.captain-links input{display:block;margin:5px 0 0;min-width:0;width:100%;font-size:11px}
+.admin-details>details{margin:0}
+.admin-details>details>summary{font-size:15px;font-weight:650;line-height:1.7;letter-spacing:-.025em}
+.admin-details>details[open]>summary{padding-bottom:17px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+.admin-console summary::marker{color:var(--gold)}
+#qr-panel,#settings-panel,#hq-announcements{scroll-margin-top:95px}
+.qr-management-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.qr-management-head p{font-size:11px;line-height:1.8}
+.qr-counters{display:flex;flex-wrap:wrap;gap:8px}
+.qr-tools{display:flex;flex-wrap:wrap;gap:8px;margin:17px 0 20px}
+.qr-admin-list{display:grid;gap:10px}
+.qr-admin-row{display:grid;grid-template-columns:145px minmax(0,1fr) auto;align-items:center;gap:18px;min-width:0;padding:15px;background:#141e17;border:1px solid var(--line);border-radius:3px}
+.qr-identity strong{font:700 25px/1.2 var(--font-score);display:block}
+.qr-identity .pill{font-size:9px;padding:2px 6px;margin-top:5px}
+.qr-identity small{display:block;font-size:10px;margin-top:4px}
+.qr-location{min-width:0}
+.qr-location span{display:block;font-size:10px;color:var(--muted);margin-bottom:5px}
+.qr-location input{min-width:0;width:100%;font-size:12px}
+.qr-row-actions{display:flex;align-items:center;gap:8px}
+.qr-row-actions .qr-switch{min-width:66px;color:var(--muted);border-color:#475146;background:#20251f}
+.qr-row-actions .qr-switch.enabled{background:#2b3825;color:#dbe4bd;border-color:#899b66}
+#settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 24px}
+#settings .settingrow{grid-template-columns:minmax(0,1fr) 100px;gap:10px;margin:0}
+#settings .criteriarow{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px}
+#settings .criteriarow h3,#settings .criteriarow label:first-of-type{grid-column:1/-1}
+#settings .criteriarow label{min-width:0;font-size:11px;margin:0}
+#settings .criteriarow input{display:block;width:100%;min-width:0;font-size:12px;margin-top:5px}
+#settings>.btn,#settings>p{grid-column:1/-1;justify-self:start}
+#correction{max-width:640px}
+.data-tools{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px}
+.data-tools p{font-size:11px;margin-top:5px}
+.data-tools .actions{margin:0}
+@container(min-width:620px){.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container(min-width:1050px){.admin-workspace{grid-template-columns:minmax(0,1.65fr) minmax(290px,1fr)}}
+@container(min-width:1250px){.admin-workspace{grid-template-columns:1fr}.admin-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.admin-support{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}}
+@media(max-width:720px){
+ .admin-main{padding:24px 16px 35px}
+ .admin-console .panel{padding:17px;margin-bottom:16px}
+ .admin-workspace{gap:0}
+ .command-masthead{height:125px;margin-bottom:16px}
+ .command-masthead>div:not(.scene){padding:20px}
+ .command-masthead h2{font-size:21px}
+ .command-controls .panelhead{gap:12px;align-items:flex-start}
+ .command-controls .muted{font-size:10px}
+ .control-clock{min-width:72px}
+ .control-clock .clock{font-size:36px;min-height:40px}
+ .control-clock small{font-size:10px}
+ .control-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .control-actions .btn{min-width:0;font-size:11px;padding:9px 6px}
+ .admin-metrics{gap:10px 17px;font-size:10px}
+ .admin-metrics b{font-size:22px;margin-left:5px}
+ .admin-card{padding:17px}
+ .admin-team-head h3{font-size:17px}
+ .admin-console .scorebuttons .btn{font-size:12px;min-height:45px}
+ .bonus-eligibility{min-height:0}
+ .captain-links .links{grid-template-columns:1fr}
+ .qr-admin-row{grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:13px}
+ .qr-identity{grid-column:1;grid-row:1}
+ .qr-row-actions{grid-column:2;grid-row:1;gap:6px}
+ .qr-row-actions .btn.small{padding:7px 8px;font-size:10px;min-width:0}
+ .qr-row-actions .qr-switch{min-width:58px}
+ .qr-location{grid-column:1/-1;grid-row:2}
+ .qr-tools .btn{font-size:10px;padding:9px 10px}
+ #settings{grid-template-columns:1fr;gap:14px}
+ #settings .criteriarow{grid-template-columns:1fr;gap:10px}
+ .admin-details>details>summary{font-size:13px}
+}
