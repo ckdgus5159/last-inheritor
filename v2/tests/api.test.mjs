@@ -32,3 +32,27 @@ test('API 코드 재입장·동시 입장 시 한 분대에 마지막 세션만 
 test('API 분대장 코드 입장도 서버의 시도 제한 적용',async()=>{
  const {call,store}=fixture();let seen;store.limit=async(bucket,maximum)=>{seen={bucket,maximum};return false;};const before=await store.read('live');assert.equal((await call({action:'login',payload:{role:'captain',team:'A',code:'wrong'}})).status,429);assert.equal(seen.maximum,60);assert.match(seen.bucket,/^[a-f0-9]{64}$/);assert.deepEqual(await store.read('live'),before);
 });
+
+test('API 직접 설정한 코드 저장·암호화·이전 권한 해제·기록 보존',async()=>{
+ const {call,store}=fixture(),a=await call({action:'login',payload:{role:'admin',code:config.admin}}),initial=(await call({action:'captainCodes',cookie:a.cookie})).body;
+ const captain=await call({action:'login',payload:{role:'captain',team:'A',code:initial.codes[0].code}});await call({action:'start',cookie:a.cookie});await call({action:'report',cookie:captain.cookie});await call({action:'approve',cookie:a.cookie,payload:{team:'A',score:10}});const before=(await store.read('live')).data;
+ const saved=await call({action:'setCaptainCode',cookie:a.cookie,payload:{team:'A',code:'  squad-1234 ',epoch:initial.epoch,generation:0}});assert.equal(saved.status,200);assert.equal(saved.body.codes[0].code,'SQUAD1234');assert.equal(saved.body.codes[0].generation,1);
+ const after=(await store.read('live')).data;for(const key of ['reports','bonuses'])assert.deepEqual(after.teams.A[key],before.teams.A[key]);assert.deepEqual(after.qr,before.qr);assert.ok(after.teams.A.captainCredential);assert.equal(JSON.stringify(after).includes('SQUAD1234'),false);assert.equal(saved.body.teams.A.captainCredential,undefined);
+ assert.equal((await call({method:'GET',cookie:captain.cookie})).status,401);assert.equal((await call({action:'login',payload:{role:'captain',team:'A',code:initial.codes[0].code}})).status,401);const next=await call({action:'login',payload:{role:'captain',team:'A',code:'squad1234'}});assert.equal(next.status,200);assert.equal(next.body.teams.A.captainCredential,undefined);
+ const same=await call({action:'setCaptainCode',cookie:a.cookie,payload:{team:'A',code:'squad-1234',epoch:initial.epoch,generation:1}});assert.equal(same.status,200);assert.equal(same.body.codes[0].generation,1);assert.equal((await call({method:'GET',cookie:next.cookie})).status,200);
+ const recreated=createHandler(store,config);let body;await recreated({method:'POST',url:'/api/ops',headers:{host:'ops.test',origin:'https://ops.test','content-type':'application/json',cookie:a.cookie},body:{action:'captainCodes'}},{setHeader(){},status(){return this;},json(v){body=v;}});assert.equal(body.codes[0].code,'SQUAD1234');
+});
+test('API 직접 설정 코드 권한·길이·중복·관리자 코드·동시 저장 검증',async()=>{
+ const {call,store}=fixture(),a=await call({action:'login',payload:{role:'admin',code:config.admin}}),initial=(await call({action:'captainCodes',cookie:a.cookie})).body,p={team:'A',code:'1234',epoch:initial.epoch,generation:0},m=await call({action:'login',payload:{role:'member',team:'A'}}),before=(await store.read('live')).data;
+ assert.equal((await call({action:'setCaptainCode',cookie:m.cookie,payload:p})).status,403);assert.equal((await call({action:'setCaptainCode',cookie:a.cookie,rehearsal:true,preview:'captain:A',payload:p})).status,403);
+ for(const code of ['',1234,'123','A'.repeat(21),'한글코드','AB!@',initial.codes[1].code,config.admin])assert.equal((await call({action:'setCaptainCode',cookie:a.cookie,payload:{...p,code}})).status,400);
+ assert.deepEqual((await store.read('live')).data,before);assert.equal((await call({action:'setCaptainCode',cookie:a.cookie,payload:{...p,epoch:'old'}})).status,409);
+ const results=await Promise.all(['1234','5678'].map(code=>call({action:'setCaptainCode',cookie:a.cookie,payload:{...p,code}})));assert.deepEqual(results.map(r=>r.status).sort(),[200,409]);assert.equal((await call({action:'setCaptainCode',cookie:a.cookie,payload:{...p,code:'9012'}})).status,409);
+ assert.equal((await call({action:'setCaptainCode',cookie:a.cookie,payload:{team:'B',code:'abcde12345abcde12345',epoch:initial.epoch,generation:0}})).status,200);
+});
+test('API 직접 설정 코드는 모드별 저장·재발급 및 초기화 시 제거',async()=>{
+ const {call,store}=fixture(),a=await call({action:'login',payload:{role:'admin',code:config.admin}}),live=(await store.read('live')).data,rehearsal=(await store.read('rehearsal')).data;
+ await call({action:'setCaptainCode',cookie:a.cookie,rehearsal:true,payload:{team:'A',code:'2468',epoch:rehearsal.epoch,generation:0}});assert.deepEqual((await store.read('live')).data,live);assert.equal((await call({action:'captainCodes',cookie:a.cookie,rehearsal:true})).body.codes[0].code,'2468');
+ await call({action:'setCaptainCode',cookie:a.cookie,payload:{team:'A',code:'1357',epoch:live.epoch,generation:0}});await call({action:'revokeCaptain',cookie:a.cookie,payload:{team:'A'}});assert.equal((await store.read('live')).data.teams.A.captainCredential,undefined);assert.notEqual((await call({action:'captainCodes',cookie:a.cookie})).body.codes[0].code,'1357');
+ const backup=await call({action:'backup',cookie:a.cookie,rehearsal:true});await call({action:'reset',cookie:a.cookie,rehearsal:true,payload:{confirm:'V2 초기화',expectedVersion:backup.body.version}});assert.equal((await store.read('rehearsal')).data.teams.A.captainCredential,undefined);
+});

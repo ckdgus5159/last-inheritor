@@ -45,7 +45,7 @@ export function transition(state,actor,action,p={},now=Date.now(),rng=randomInt)
   else if(action==='announce'){ensure(typeof p.text==='string'&&p.text.trim().length>0&&p.text.length<=240,'240자 이내 지령을 입력하세요.',400);s.announcements.unshift({id:token(),text:p.text.trim(),urgent:!!p.urgent});s.announcements=s.announcements.slice(0,12);}
   else if(action==='qrBulkEdit'){ensure(typeof p.enabled==='boolean','QR 활성 상태를 확인하세요.',400);for(const q of s.qr)q.enabled=p.enabled;}
   else if(action==='qrEdit'){const q=s.qr.find(q=>q.id===p.id);ensure(q,'QR을 확인하세요.',400);if(typeof p.enabled==='boolean')q.enabled=p.enabled;if(typeof p.location==='string')q.location=p.location.slice(0,100);}
-  else if(action==='revokeCaptain'){const t=getTeam(s,p.team);t.leader=null;t.generation++;}
+  else if(['revokeCaptain','setCaptainCode'].includes(action)){const t=getTeam(s,p.team);t.leader=null;t.generation++;delete t.captainCredential;}
   else if(action==='configure'){ensure(['lobby','intermission'].includes(s.phase),'대기 또는 라운드 사이에 설정하세요.');for(const [key,min,max] of [['roundSeconds',30,1800],['bossSeconds',30,1800],['timerMin',9000,10000],['timerMax',10000,11000],['tapTarget',1,300],['bottleAttempts',1,10],['bottleWins',1,10]])if(p[key]!==undefined){ensure(Number.isInteger(p[key])&&p[key]>=min&&p[key]<=max,'설정 범위를 확인하세요.',400);s.config[key]=p[key];}ensure(s.config.bottleWins<=s.config.bottleAttempts,'성공 횟수는 시도 횟수 이하여야 합니다.',400);for(const t of TITANS){if(p.limits?.[t.id]!==undefined){ensure(Number.isInteger(p.limits[t.id])&&p.limits[t.id]>=1&&p.limits[t.id]<=1800,'시간 기준을 확인하세요.',400);s.config.limits[t.id]=p.limits[t.id];}for(const n of ['6','8','10'])if(p.criteria?.[t.id]?.[n]!==undefined){ensure(typeof p.criteria[t.id][n]==='string'&&p.criteria[t.id][n].length<=160,'판정 기준은 160자 이내입니다.',400);s.config.criteria[t.id][n]=p.criteria[t.id][n];}}}
   else if(action==='reset'){ensure(p.confirm==='V2 초기화','초기화 확인 문구가 필요합니다.',400);s=initialState();}
   else throw new RuleError('알 수 없는 작전입니다.',400);
@@ -56,7 +56,7 @@ export function projectState(state,actor,now=Date.now()){
  const s=structuredClone(state);expire(s,now);s.serverNow=now;s.active=active(s,now);s.actor={role:actor.role,team:actor.team};s.boss.hp=100-s.boss.approved.length*25;
  s.ranking=TEAMS.map(id=>({id,...scores(s,id)})).sort((a,b)=>b.total-a.total);let last=-1,rank=0;s.ranking.forEach((x,i)=>{if(x.total!==last)rank=i+1;x.rank=rank;last=x.total;});
  s.medals=s.published?TEAMS.map(id=>({team:id,titles:[Object.values(s.teams[id].reports).filter(r=>r.score>0).length===6?'여섯 거인의 계승자':null,s.qr.filter(q=>q.claim?.team===id).length===4?'보급 수색대':null,Object.values(s.teams[id].bonuses).some(b=>b.status==='success')?'한계 돌파':null,s.boss.approved.includes(id)?'방벽의 수호자':null].filter(Boolean)})):[];
- for(const t of Object.values(s.teams)){t.eligible=eligibility(s,t.id,now);t.captainAssigned=!!t.leader;delete t.leader;if(actor.role!=='admin'&&actor.team!==t.id)t.bonuses={};}
+ for(const t of Object.values(s.teams)){t.eligible=eligibility(s,t.id,now);t.captainAssigned=!!t.leader;delete t.leader;delete t.captainCredential;if(actor.role!=='admin'&&actor.team!==t.id)t.bonuses={};}
  s.qrRemaining=s.qr.filter(q=>q.enabled&&!q.claim).length;s.qrUsed=s.qr.filter(q=>q.claim).length;
  if(actor.role!=='admin'){s.qr=s.qr.map(({id,value,enabled,claim})=>({id,value,enabled,claim}));delete s.events;delete s.config.criteria;delete s.config.limits;}
  return s;

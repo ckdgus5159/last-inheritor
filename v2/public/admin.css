@@ -138,3 +138,5 @@
 }
 
 .captain-code>div{display:flex;align-items:center;gap:8px}.captain-codes .captain-code input{font-family:var(--font-score),monospace;font-size:22px;letter-spacing:.09em;font-weight:600;flex:1;width:0}.captain-code .btn{flex-shrink:0;white-space:nowrap}.captain-codes .muted{line-height:1.7}
+
+.captain-code-edit{display:flex;align-items:center;gap:8px}.captain-code form{margin-top:10px}.captain-code form .captain-code-edit input{font-family:var(--font-ui);font-size:15px;letter-spacing:.02em;font-weight:500}.captain-code form .btn{margin-top:5px}.captain-code>label{font-size:13px;font-weight:700}.captain-code{padding:14px;border:1px solid var(--line)}
