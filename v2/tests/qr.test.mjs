@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {supplyTokenFromQR} from '../public/qr-scanner.mjs';
+const origin='https://ops.test',token='A'.repeat(32);
+test('행사 QR 주소에서만 토큰을 추출',()=>{assert.equal(supplyTokenFromQR(origin+'/#supply='+token,origin),token);for(const raw of ['https://evil.test/#supply='+token,'https://ops.test.evil.test/#supply='+token,origin+'/other#supply='+token,'javascript:alert(1)','not a url',origin+'/#supply=short',origin+'/#supply='+token+'&supply='+token,'https://user:pass@ops.test/#supply='+token])assert.equal(supplyTokenFromQR(raw,origin),null);});

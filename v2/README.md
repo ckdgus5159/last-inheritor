@@ -9,6 +9,7 @@
 - 규칙·API 검증: `npm test`
 - 브라우저 검증: `npm install --no-save --ignore-scripts playwright@1.62.1`, `npx playwright install --with-deps chromium`, `node scripts/browser-check.mjs`
 - 관리자 전체 흐름 검증: `node scripts/admin-check.mjs`
+- 카메라 QR·자동 확보 검증: `node scripts/qr-camera-check.mjs`
 - 분대장 코드 입장 검증: `node scripts/captain-check.mjs`
 - 배포: 이 디렉터리만 별도 Vercel 프로젝트의 루트로 사용합니다. 루트 V1 설정은 수정하지 않습니다.
 
