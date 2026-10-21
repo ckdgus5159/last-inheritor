@@ -1,4 +1,6 @@
 export const TEAMS=['A','B','C','D'];
+export const TEAM_NAMES={A:'백마부대',B:'홍마부대',C:'흑마부대',D:'청황마부대'};
+export const teamName=id=>TEAM_NAMES[id]||'전체';
 export const TITANS=[
  {id:'cart',name:'차력 거인',ability:'보급의 달인',game:'젓가락으로 콩 옮기기',items:'젓가락, 콩, 그릇',description:'차력 거인은 끈질기게 물자를 나르며 전장을 누빈다. 작은 보급품을 하나씩 옮기되, 서두르다 떨어뜨리지 않도록 손끝에 집중하라.',brief:'흩어진 보급품을 되찾을 시간! 침착한 손끝으로 분대의 진격을 이어 가자.',limit:240},
  {id:'beast',name:'짐승 거인',ability:'정밀 투척',game:'신발을 던져 소쿠리로 받기',items:'신발, 소쿠리',description:'짐승 거인의 특기는 멀리서도 목표를 노리는 투척이다. 던지는 동료와 받는 동료가 거리를 맞추고, 한 번의 궤적을 함께 완성하라.',brief:'던지는 동료와 받는 동료의 완벽한 호흡! 우리의 합동 투척을 보여 주자.',limit:240},

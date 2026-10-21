@@ -1,0 +1,1 @@
+export function relativeTime(at,now){const seconds=Math.max(0,Math.floor((now-at)/1000));if(seconds<60)return '방금 전';const minutes=Math.floor(seconds/60);if(minutes<60)return minutes+'분 전';const hours=Math.floor(minutes/60);return hours<24?hours+'시간 전':Math.floor(hours/24)+'일 전';}

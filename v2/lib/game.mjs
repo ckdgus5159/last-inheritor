@@ -1,4 +1,5 @@
 import {randomBytes,randomInt} from 'node:crypto';
+import {battleFeed} from './battle-feed.mjs';
 import {TEAMS,TITANS,BONUSES,PHOTO,PERSON,assigned,TAP_DURATION_MS} from './catalog.mjs';
 export {TEAMS,TITANS,BONUSES,assigned};
 export class RuleError extends Error {constructor(message,status=409){super(message);this.status=status;}}
@@ -18,7 +19,7 @@ export function transition(state,actor,action,p={},now=Date.now(),rng=randomInt)
  if(action==='claim'){const t=getTeam(s,actor.team);ensure(actor.role==='captain'&&actor.generation===t.generation,'현재 분대장 코드로 입장하세요.',403);t.leader=actor.sid;}
  else if(['report','qrClaim','bonusStart','bonusSubmit'].includes(action)){
   captain(s,actor);if(action!=='qrClaim')ensure(active(s,now),'정규 라운드 진행 중에만 가능합니다.');const t=s.teams[actor.team];
-  if(action==='report'){if(!t.reports[s.round]||now<t.reports[s.round].at)t.reports[s.round]={titan:assigned(actor.team,s.round).id,at:now,elapsed:now-s.clock.start,score:null};}
+  if(action==='report'){ensure(p.round===undefined||Number(p.round)===s.round,'라운드가 바뀌었습니다. 현재 미션을 확인하세요.');if(!t.reports[s.round]||now<t.reports[s.round].at)t.reports[s.round]={titan:assigned(actor.team,s.round).id,at:now,elapsed:now-s.clock.start,score:null};}
   if(action==='qrClaim'){const q=s.qr.find(q=>q.token===p.token);ensure(q,'보급품 QR을 확인하세요.',404);ensure(!q.claim,'이미 사용된 QR입니다');ensure(q.enabled,'비활성화된 QR입니다');ensure(s.qr.filter(q=>q.claim?.team===actor.team).length<4,'분대별 QR 획득은 네 개까지입니다. 이 QR은 소모되지 않았습니다.');q.claim={team:actor.team,at:now,points:q.value};}
   if(action==='bonusStart'){const b=t.bonuses[s.round];ensure(b&&['timer','tap'].includes(b.kind),'웹 미니게임을 확인하세요.');ensure(b.status==='issued','이미 시작한 도전입니다. 재도전할 수 없습니다.');ensure(s.clock.end-now>=10000,'도전을 완료할 시간이 부족합니다.');if(b.kind==='tap'){b.durationMs=TAP_DURATION_MS;b.target=s.config.tapTarget;b.name='10초 연타';b.instructions=`10초 동안 ${b.target}회 이상 터치`;}b.status='running';b.started=now;b.attempt=token();}
   if(action==='bonusSubmit'){const b=t.bonuses[s.round];ensure(b?.status==='running'&&b.attempt===p.attempt,'유효한 도전이 아닙니다.');const age=now-b.started;let win=false;
@@ -50,10 +51,12 @@ export function transition(state,actor,action,p={},now=Date.now(),rng=randomInt)
   else if(action==='reset'){ensure(p.confirm==='V2 초기화','초기화 확인 문구가 필요합니다.',400);s=initialState();}
   else throw new RuleError('알 수 없는 작전입니다.',400);
  }
- s.events.unshift({id:token(),at:now,action,team:target,by:actor.role,...(TEAMS.includes(target)?{before:scores(state,target),after:scores(s,target)}:{})});s.events=s.events.slice(0,160);return s;
+ const detail=action==='approve'?`${assigned(target,Number(p.round??s.round)).name} 토벌 완료`:action==='qrClaim'?(s.qr.find(q=>q.token===p.token)?.value===2?'희귀 보급품 확보':'보급품 확보'):['bonusSubmit','fieldResult','roulette'].includes(action)?`${s.teams[target].bonuses[s.round].name} ${s.teams[target].bonuses[s.round].status==='success'?'성공':'결과'}`:undefined;
+ s.events.unshift({id:token(),at:now,action,team:target,by:actor.role,...(detail?{detail}:{}),...(TEAMS.includes(target)?{before:scores(state,target),after:scores(s,target)}:{})});s.events=s.events.slice(0,160);return s;
 }
 export function projectState(state,actor,now=Date.now()){
  const s=structuredClone(state);expire(s,now);s.serverNow=now;s.active=active(s,now);s.actor={role:actor.role,team:actor.team};s.boss.hp=100-s.boss.approved.length*25;
+ s.battleFeed=battleFeed(s.events);
  s.ranking=TEAMS.map(id=>({id,...scores(s,id)})).sort((a,b)=>b.total-a.total);let last=-1,rank=0;s.ranking.forEach((x,i)=>{if(x.total!==last)rank=i+1;x.rank=rank;last=x.total;});
  for(const t of Object.values(s.teams))for(const b of Object.values(t.bonuses))if(b.kind==='tap'){b.durationMs??=b.status==='issued'?TAP_DURATION_MS:15000;b.name=b.durationMs===TAP_DURATION_MS?'10초 연타':'연타 도전';if(b.status==='issued')b.instructions=`10초 동안 ${b.target??s.config.tapTarget}회 이상 터치`;}
  s.medals=s.published?TEAMS.map(id=>({team:id,titles:[Object.values(s.teams[id].reports).filter(r=>r.score>0).length===6?'여섯 거인의 계승자':null,s.qr.filter(q=>q.claim?.team===id).length===4?'보급 수색대':null,Object.values(s.teams[id].bonuses).some(b=>b.status==='success')?'한계 돌파':null,s.boss.approved.includes(id)?'방벽의 수호자':null].filter(Boolean)})):[];

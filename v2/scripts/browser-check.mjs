@@ -47,13 +47,13 @@ try{
  await page.getByRole('button',{name:'독립 리허설 열기',exact:true}).click();await page.getByText('● 리허설 · 실제 점수와 별도').waitFor();await page.getByRole('button',{name:'작전 개시',exact:true}).click();
  await page.locator('#preview').selectOption('captain:A');await page.locator('[data-tab="titans"]').click();
  assert.equal(await page.locator('[data-tab="collection"]').count(),0);assert.equal(await page.locator('.inherited-ability').count(),6);assert.equal(await page.getByText(/준비물 ·|분대장 보고 후 본부가/).count(),0);
- await page.getByRole('button',{name:'미션 완료 보고',exact:true}).click();await page.getByRole('button',{name:'완료 보고 접수됨'}).waitFor();
+ await page.locator('.titan-cards').getByRole('button',{name:'미션 완료 보고',exact:true}).click();await page.getByRole('button',{name:'완료 보고 접수됨'}).waitFor();
  await page.locator('#preview').selectOption('');await page.locator('[data-tab="admin"]').click();await page.locator('.admin-card').first().getByRole('button',{name:'10점 승인',exact:true}).click();await page.locator('.admin-card').first().getByRole('button',{name:'보너스미션 지급',exact:true}).click();
  await page.locator('#preview').selectOption('captain:A');await page.locator('#bonus-alert[open]').waitFor();await page.locator('#dismiss-bonus').click();
  await page.locator('[data-tab="supply"]').click();await page.getByRole('button',{name:'가상 QR 스캔 시험'}).click();await page.waitForFunction(()=>document.querySelector('.qr-feedback')?.textContent.includes('보급품을 확보했습니다'));assert.equal(await page.getByRole('button',{name:'보급품 확보',exact:true}).count(),0);
  for(const width of [360,390,768,1440]){
   await page.setViewportSize({width,height:1000});
-  for(const tab of ['dashboard','titans','supply','results']){await page.locator(`[data-tab="${tab}"]`).click();await noOverflow(page,width+' '+tab);if(tab==='results'){assert.equal(await page.getByRole('heading',{name:'A분대 점수 상세',exact:true}).count(),1);assert.equal(await page.getByText(/추가 = min/).count(),0);}if(tab==='supply')assert.equal(await page.getByText('공원 곳곳의 보급품을 찾아라! 확보(스캔)는 분대장 기기에서 가능해요.',{exact:true}).count(),1);}
+  for(const tab of ['dashboard','titans','supply','results']){await page.locator(`[data-tab="${tab}"]`).click();await noOverflow(page,width+' '+tab);if(tab==='results'){assert.equal(await page.getByRole('heading',{name:'백마부대 점수 상세',exact:true}).count(),1);assert.equal(await page.getByText(/추가 = min/).count(),0);}if(tab==='supply')assert.equal(await page.getByText('공원 곳곳의 보급품을 찾아라! 확보(스캔)는 분대장 기기에서 가능해요.',{exact:true}).count(),1);}
  }
  await page.locator('[data-tab="dashboard"]').click();await clearCelebration(page);
  assert.equal(await page.locator('.dashboard-stats .stat').count(),3);assert.equal(await page.locator('.sector-tile.undefeated').count(),5);
